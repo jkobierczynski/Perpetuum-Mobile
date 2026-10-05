@@ -1,0 +1,370 @@
+<!doctype html>
+<!-- Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski. SPDX-License-Identifier: GPL-3.0-only. Made with Claude Opus 5.5 Medium. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The magnet and the ramp</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+/* Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+   SPDX-License-Identifier: GPL-3.0-only. Made with Claude Opus 5.5 Medium. */
+
+/* Layout: one drawing sheet. A title block carries the controls; twenty plates follow in three groups,
+   each with the figure on a grid ground at left and its specification at right. */
+:root{
+  --paper:#e9eef4; --plate:#f6f9fc; --ink:#14305a; --soft:#536a8c;
+  --line:#b4c3d6; --grid:#d9e2ed; --brass:#b9851f; --stamp:#b42a22; --water:#5f93d3;
+  --display:"Besley","Rockwell",Georgia,serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e2748; --plate:#123059; --ink:#e8f0fc; --soft:#9fb6d8;
+    --line:#345a90; --grid:#1a3c6c; --brass:#f2c35b; --stamp:#ff9384; --water:#6fb0ff;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e2748; --plate:#123059; --ink:#e8f0fc; --soft:#9fb6d8;
+  --line:#345a90; --grid:#1a3c6c; --brass:#f2c35b; --stamp:#ff9384; --water:#6fb0ff;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+.sheet{max-width:1080px;margin-inline:auto;padding-inline:clamp(16px,4vw,40px);padding-block:clamp(28px,5vw,56px);
+  display:flex;flex-direction:column;gap:clamp(48px,7vw,84px)}
+p,h1,h2,h3,dl,dd,figure{margin:0}
+
+.mast{display:flex;flex-direction:column;gap:20px}
+.eyebrow,.tag,.cell dt,.readout dt,figcaption,.swstate,.why,.jump{font-family:var(--mono);font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2.5rem,8vw,4.6rem);line-height:.98;letter-spacing:-.015em;text-wrap:balance}
+.lede{max-width:60ch;font-size:1.12rem}
+.titleblock{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1.5px;background:var(--ink);border:1.5px solid var(--ink)}
+.cell{background:var(--paper);padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cell dd{font-family:var(--mono);font-size:.92rem}
+.btn{font-family:var(--mono);font-size:.82rem;letter-spacing:.04em;color:var(--ink);background:var(--plate);
+  border:1.5px solid var(--ink);padding:6px 12px;cursor:pointer;align-self:flex-start}
+.btn:hover{background:var(--ink);color:var(--plate)}
+.jump{display:flex;flex-wrap:wrap;gap:8px 22px}
+.jump a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+
+.group{display:flex;flex-direction:column;gap:clamp(32px,5vw,52px)}
+.group>header{display:flex;flex-direction:column;gap:8px;border-top:4px double var(--ink);padding-top:20px}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5vw,2.9rem);line-height:1.05;text-wrap:balance}
+.group>header p:last-child{max-width:62ch}
+.plates{display:flex;flex-direction:column;gap:clamp(36px,5vw,56px)}
+.plate{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start;
+  border-top:1.5px solid var(--ink);padding-top:clamp(24px,4vw,40px)}
+@media (max-width:780px){.plate{grid-template-columns:minmax(0,1fr)}}
+.fig{display:flex;flex-direction:column;gap:12px;min-width:0}
+.stage{position:relative;border:1.5px solid var(--ink);background-color:var(--plate);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:20px 20px}
+canvas{display:block;width:100%;height:auto;aspect-ratio:420/340;max-width:100%}
+.stamp{position:absolute;right:14px;bottom:14px;max-width:calc(100% - 28px);transform:rotate(-7deg);border:2.5px solid var(--stamp);color:var(--stamp);
+  background:color-mix(in srgb,var(--plate) 86%,transparent);padding:6px 12px 5px;text-align:center;line-height:1.15}
+.stamp b{display:block;font-family:var(--display);font-weight:700;font-size:clamp(1.05rem,4vw,1.5rem);letter-spacing:.08em;text-transform:uppercase}
+.stamp span{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase}
+.readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-top:1px solid var(--line);padding-top:10px}
+.readout dd{font-family:var(--mono);font-size:1.05rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.readout dt{font-size:.68rem}
+
+.spec{display:flex;flex-direction:column;gap:14px;min-width:0}
+h3{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,3.4vw,1.95rem);line-height:1.1;text-wrap:balance}
+.spec p{max-width:62ch}
+.spec .why{margin-top:4px;color:var(--ink);font-weight:500}
+.switch{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:12px 14px;margin-block:4px;
+  border:1.5px solid var(--ink);background:var(--plate);color:var(--ink);font:inherit;cursor:pointer}
+.track{flex:none;width:46px;height:24px;border:1.5px solid var(--ink);border-radius:12px;position:relative;background:var(--paper)}
+.thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:var(--ink);transition:transform .18s}
+.switch[aria-checked="true"] .track{background:var(--ink)}
+.switch[aria-checked="true"] .thumb{transform:translateX(22px);background:var(--plate)}
+.swtext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.swname{font-weight:600}
+.switch[aria-checked="true"] .swstate{color:var(--stamp)}
+@media (prefers-reduced-motion:reduce){.thumb{transition:none}}
+
+.foot{border-top:1.5px solid var(--ink);padding-top:18px;color:var(--soft);font-size:.92rem;max-width:72ch}
+
+/* gallery and single-machine pages */
+.h1m{font-size:clamp(2rem,6.4vw,3.5rem)}
+.sheet.page{gap:clamp(22px,3.4vw,36px)}
+.tb3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.crumbs{font-family:var(--mono);font-size:.82rem;letter-spacing:.04em}
+.crumbs a,.sources a{color:var(--ink);text-underline-offset:3px}
+.pager{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5px;background:var(--ink);border:1.5px solid var(--ink)}
+.pager a{background:var(--paper);color:var(--ink);padding:12px 14px;text-decoration:none;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pager a:hover{background:var(--plate)}
+.pager .next{text-align:right}
+.pager span{font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+.pager b{font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.2}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2.2vw,24px)}
+@media (min-width:640px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:940px){.cards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.card{display:flex;flex-direction:column;gap:5px;color:var(--ink);text-decoration:none;min-width:0}
+.card .stage{margin-bottom:4px}
+.card .num{font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+.card .ct{font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.15}
+.card .cc{font-size:.82rem;color:var(--soft);line-height:1.35}
+.card:hover .stage,.card:focus-visible .stage{outline:2.5px solid var(--brass);outline-offset:1px}
+.card:hover .ct{text-decoration:underline;text-underline-offset:3px}
+.card .stamp{right:6px;bottom:6px;padding:2px 7px 1px;border-width:2px}
+.card .stamp b{font-size:.74rem}
+.sources{border-top:1.5px solid var(--ink);padding-top:18px;color:var(--soft);font-size:.86rem;display:flex;flex-direction:column;gap:8px}
+.sources ul{margin:0;padding-left:1.1em;columns:2 280px;column-gap:32px}
+.sources li{break-inside:avoid;margin-bottom:4px;overflow-wrap:anywhere}
+.colophon{font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;color:var(--soft);border-top:1px solid var(--line);padding-top:14px;line-height:1.7}
+.colophon a{color:var(--ink);text-underline-offset:3px}
+</style>
+</head>
+<body>
+<main class="sheet page">
+  <header class="mast">
+    <nav class="crumbs" aria-label="Back"><a href="index.html">← All 56 machines</a></nav>
+    <p class="eyebrow">Fig. 7 · First kind · work from nothing</p>
+    <h1 class="h1m">The magnet and the ramp</h1>
+    <dl class="titleblock tb3">
+      <div class="cell"><dt>Sheet</dt><dd>7 of 56</dd></div>
+      <div class="cell"><dt>Group</dt><dd>The first kind</dd></div>
+      <div class="cell"><dt>Motion</dt><dd><button class="btn" id="pause" type="button">Pause</button></dd></div>
+    </dl>
+  </header>
+  <section class="plate unit" aria-label="The magnet and the ramp">
+    <figure class="fig">
+      <div class="stage"><canvas data-m="wilkins" role="img" aria-label="An iron ball climbs a straight ramp toward a magnet on a post, drops through a hole near the top and rolls back down a curved ramp."></canvas>
+        <div class="stamp" hidden><b>Refused</b><span>Ball sticks to the magnet</span></div></div>
+      <figcaption>Fig. 7 · Lodestone and ramp, described by John Wilkins, 1648</figcaption>
+      <dl class="readout"><div><dt>Laps</dt><dd>–</dd></div><div><dt>Ball</dt><dd>–</dd></div><div><dt>Height</dt><dd>–</dd></div></dl>
+    </figure>
+    <div class="spec">
+      <p class="why">The claim</p>
+      <p>A lodestone on a post draws an iron ball up a ramp. Just before the top the ball meets a hole, drops through, and rolls down a second ramp to the start, where the magnet catches it again. John Wilkins described the scheme in 1648, and doubted it.</p>
+      <button class="switch" id="sw" type="button" role="switch" aria-checked="false" aria-labelledby="swn" data-off="Suspended" data-on="In force">
+        <span class="track"><span class="thumb"></span></span>
+        <span class="swtext"><span class="swname" id="swn">First law of thermodynamics</span><span class="swstate">Suspended</span></span>
+      </button>
+      <p class="why">Why it stops</p>
+      <p>A magnet strong enough to haul the ball up the ramp is strong enough to carry it across the hole, so the ball ends up stuck to the lodestone. If the ball did fall, the magnet would pull against it all the way down and take back exactly what it gave on the way up.</p>
+    </div>
+  </section>
+  <nav class="pager" aria-label="Other machines">
+    <a class="prev" href="fludd.html"><span>← Fig. 6</span><b>The water screw mill</b></a>
+    <a class="next" href="boyle.html"><span>Fig. 8 →</span><b>The self-filling flask</b></a>
+  </nav>
+  <p class="colophon">Perpetuum Mobile · Copyright © 2026 Jurgen Kobierczynski · Free software under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License, version 3</a>, with no warranty · Made with Claude Opus 5.5 Medium</p>
+</main>
+<script>
+(() => {
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Drawing helpers shared by every machine. build.js wraps this file, the machines and runtime.js in one function.
+  const TAU = Math.PI * 2;
+  const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+  const C = {};
+  function readColors() {
+    const s = getComputedStyle(document.documentElement);
+    for (const k of ['paper', 'plate', 'ink', 'soft', 'line', 'brass', 'stamp', 'water']) C[k] = s.getPropertyValue('--' + k).trim();
+  }
+  readColors();
+
+  /* ---------- drawing helpers ---------- */
+  const L = (g, x1, y1, x2, y2) => { g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); };
+  const hatch = (g, x0, x1, y) => { for (let x = x0 + 6; x <= x1; x += 9) L(g, x, y, x - 6, y + 6); };
+  const disc = (g, x, y, r, fill, stroke, lw) => {
+    g.beginPath(); g.arc(x, y, r, 0, TAU);
+    if (fill) { g.fillStyle = fill; g.fill(); }
+    if (stroke) { g.strokeStyle = stroke; g.lineWidth = lw || 1.4; g.stroke(); }
+  };
+  const poly = (g, pts, close) => {
+    g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
+    if (close) g.closePath();
+  };
+  const spokes = (g, cx, cy, r0, r1, n, th) => {
+    for (let k = 0; k < n; k++) { const a = th + k * TAU / n; L(g, cx + r0 * Math.cos(a), cy + r0 * Math.sin(a), cx + r1 * Math.cos(a), cy + r1 * Math.sin(a)); }
+  };
+  const arrow = (g, x1, y1, x2, y2, h) => {
+    h = h || 7; const a = Math.atan2(y2 - y1, x2 - x1);
+    L(g, x1, y1, x2 - Math.cos(a) * h * 0.6, y2 - Math.sin(a) * h * 0.6);
+    g.beginPath(); g.moveTo(x2, y2);
+    g.lineTo(x2 - h * Math.cos(a - 0.45), y2 - h * Math.sin(a - 0.45));
+    g.lineTo(x2 - h * Math.cos(a + 0.45), y2 - h * Math.sin(a + 0.45));
+    g.closePath(); g.fillStyle = g.strokeStyle; g.fill();
+  };
+  const rr = (g, x, y, w, h, r) => {
+    g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+  };
+  let QUIET = false;
+  const label = (g, s, x, y, al) => { if (QUIET) return; g.fillStyle = C.soft; g.textAlign = al || 'left'; g.fillText(s, x, y); g.textAlign = 'left'; };
+  const ground = (g, x0, x1, y) => { g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, x0, y, x1, y); g.lineWidth = 1; hatch(g, x0, x1, y); };
+  const gauss = () => Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(TAU * Math.random());
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const $ = id => document.getElementById(id);
+
+  // a path you can walk along by distance
+  function mkPath(pts, closed) {
+    const P = closed ? pts.concat([pts[0]]) : pts, cum = [0];
+    for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]));
+    const len = cum[cum.length - 1];
+    function at(s) {
+      s = closed ? ((s % len) + len) % len : clamp(s, 0, len);
+      let lo = 0, hi = cum.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (cum[m] <= s) lo = m; else hi = m; }
+      const f = (s - cum[lo]) / ((cum[hi] - cum[lo]) || 1);
+      return [P[lo][0] + (P[hi][0] - P[lo][0]) * f, P[lo][1] + (P[hi][1] - P[lo][1]) * f];
+    }
+    function trace(g, s0, s1) {
+      g.beginPath();
+      const n = Math.max(2, Math.ceil(Math.abs(s1 - s0) / 3));
+      for (let i = 0; i <= n; i++) { const p = at(s0 + (s1 - s0) * i / n); i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]); }
+      g.stroke();
+    }
+    return { len, at, trace, pts: P };
+  }
+  // outline of a belt run round equal rollers, travelling anticlockwise on screen
+  function beltPts(cs, r) {
+    const n = cs.length, out = [], nm = [];
+    for (let i = 0; i < n; i++) { const a = cs[i], b = cs[(i + 1) % n], d = Math.hypot(b[0] - a[0], b[1] - a[1]); nm.push([-(b[1] - a[1]) / d, (b[0] - a[0]) / d]); }
+    for (let i = 0; i < n; i++) {
+      const a = cs[i], b = cs[(i + 1) % n], n1 = nm[i], n2 = nm[(i + 1) % n];
+      out.push([a[0] + r * n1[0], a[1] + r * n1[1]], [b[0] + r * n1[0], b[1] + r * n1[1]]);
+      const a1 = Math.atan2(n1[1], n1[0]); let da = Math.atan2(n2[1], n2[0]) - a1;
+      while (da > 0) da -= TAU; while (da <= -TAU) da += TAU;
+      for (let k = 1; k < 8; k++) { const t = a1 + da * k / 8; out.push([b[0] + r * Math.cos(t), b[1] + r * Math.sin(t)]); }
+    }
+    return out;
+  }
+  // steady while helped along; runs down to a dead stop when the rule is in force
+  function drive(run, tau) {
+    const d = { v: run, still: 0,
+      step(dt, on) {
+        if (on) { d.v = Math.max(0, d.v - (d.v / tau + 0.05 * run) * dt); d.still = d.v === 0 ? d.still + dt : 0; }
+        else { d.v += (run - d.v) * Math.min(1, 1.6 * dt); d.still = 0; }
+      },
+      get frac() { return d.v / run; },
+      stalled() { return d.still > 0.6; } };
+    return d;
+  }
+
+  const gear = (g, cx, cy, r, n, th, fill) => {
+    const w = TAU / n; g.beginPath();
+    for (let k = 0; k < n; k++) {
+      const a = th + k * w;
+      [[-0.22, r + 4], [0.22, r + 4], [0.32, r - 4], [0.68, r - 4]].forEach((q, j) => {
+        const x = cx + q[1] * Math.cos(a + q[0] * w), y = cy + q[1] * Math.sin(a + q[0] * w);
+        k + j ? g.lineTo(x, y) : g.moveTo(x, y);
+      });
+    }
+    g.closePath(); if (fill) { g.fillStyle = fill; g.fill(); } g.stroke();
+  };
+
+  const M = {};
+  /* ---------- 5 · Wilkins's magnet and ramp ---------- */
+  M.wilkins = g => {
+    const pts = [[60, 271.5], [265, 115]];
+    for (let i = 0; i <= 20; i++) { const t = i / 20, u = 1 - t; pts.push([u * u * 268 + 2 * u * t * 250 + t * t * 66, u * u * 131 + 2 * u * t * 292 + t * t * 277]); }
+    const path = mkPath(pts, true), upLen = Math.hypot(205, 156.5);
+    let s = 40, e = 0, laps = 0, held = 0;
+    const pos = () => e > 0 ? [265 + 0.795 * e, 115 - 0.607 * e] : path.at(s);
+    return {
+      step(dt, on) {
+        if (e > 0) { e = on ? Math.min(30, e + 160 * dt) : Math.max(0, e - 220 * dt); held = on && e >= 30 ? held + dt : 0; return; }
+        const v = s < upLen ? 70 + 120 * (s / upLen) : 150, ns = s + v * dt;
+        if (on && s < upLen && ns >= upLen) { s = upLen; e = 0.01; return; }
+        s = ns; if (s >= path.len) { s -= path.len; laps++; }
+      },
+      draw() {
+        ground(g, 30, 392, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2;
+        L(g, 322, 110, 322, 318); L(g, 64, 278, 64, 318);
+        L(g, 64, 278, 262, 126.9); L(g, 279, 113.9, 298, 99.4);
+        g.beginPath(); g.moveTo(270, 141); g.quadraticCurveTo(250, 303, 56, 288); g.lineTo(50, 270); g.stroke();
+        g.globalAlpha = 0.85; g.fillStyle = C.stamp; g.fillRect(298, 72, 24, 38); g.fillStyle = C.water; g.fillRect(322, 72, 24, 38); g.globalAlpha = 1;
+        g.lineWidth = 1.8; g.strokeRect(298, 72, 48, 38);
+        g.fillStyle = C.plate; g.textAlign = 'center'; g.fillText('N', 310, 95.5); g.fillText('S', 334, 95.5); g.textAlign = 'left';
+        const p = pos(); disc(g, p[0], p[1], 8, C.soft, C.ink, 1.5);
+        label(g, 'lodestone', 322, 62, 'center'); label(g, 'hole', 252, 104, 'right'); label(g, 'iron ball', 96, 300);
+      },
+      read() {
+        const p = pos();
+        return [laps, e >= 30 ? 'held by magnet' : e > 0 ? 'at the hole' : s < upLen ? 'climbing' : 'rolling back', Math.max(0, (286 - p[1]) / 8).toFixed(0) + ' cm'];
+      },
+      stalled(on) { return on && held > 0.5; }
+    };
+  };
+
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Finds every <canvas data-m="..."> on the page, mounts its machine and runs the animation loop.
+
+  /* ---------- runtime: every canvas on the page that names a machine ---------- */
+  const figs = [...document.querySelectorAll('canvas[data-m]')].map(cv => {
+    const unit = cv.closest('.unit'), g = cv.getContext('2d');
+    const f = { cv, g, on: false, vis: true, thumb: unit.classList.contains('card'), m: M[cv.dataset.m](g),
+      sw: unit.querySelector('.switch'), state: unit.querySelector('.swstate'), stamp: unit.querySelector('.stamp'),
+      dd: [...unit.querySelectorAll('.readout dd')] };
+    f.draw = () => {
+      const k = cv.width / 420;
+      g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, 420, 340);
+      g.lineCap = 'round'; g.lineJoin = 'round'; g.setLineDash([]); g.lineDashOffset = 0; g.globalAlpha = 1;
+      g.font = '500 12.5px ' + MONO; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+      QUIET = f.thumb; f.m.draw(f.on); QUIET = false;
+    };
+    f.fit = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2), w = Math.max(50, cv.clientWidth);
+      cv.width = Math.round(w * dpr); cv.height = Math.round(w * 340 / 420 * dpr); f.draw();
+    };
+    f.report = () => {
+      if (f.dd.length) f.m.read(f.on).forEach((v, j) => { f.dd[j].textContent = v; });
+      if (f.stamp) f.stamp.hidden = !f.m.stalled(f.on);
+    };
+    return f;
+  });
+
+  let paused = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const master = $('master'), pauseBtn = $('pause');
+  const allOn = () => figs.every(f => f.on);
+  function setPaused(p) { paused = p; if (pauseBtn) pauseBtn.textContent = p ? 'Run' : 'Pause'; }
+  function apply(f, on) {
+    f.on = on; if (f.m.set) f.m.set(on);
+    if (f.sw) { f.sw.setAttribute('aria-checked', String(on)); f.state.textContent = f.sw.dataset[on ? 'on' : 'off']; }
+    if (master) master.textContent = allOn() ? master.dataset.on : master.dataset.off;
+    setPaused(false);
+  }
+  figs.forEach(f => { if (f.sw) f.sw.addEventListener('click', () => apply(f, !f.on)); });
+  if (master) master.addEventListener('click', () => { const on = !allOn(); figs.forEach(f => apply(f, on)); });
+  if (pauseBtn) pauseBtn.addEventListener('click', () => setPaused(!paused));
+  setPaused(paused);
+
+  figs.forEach(f => { f.fit(); f.report(); });
+  if (window.ResizeObserver) { const ro = new ResizeObserver(es => es.forEach(e => { const f = figs.find(x => x.cv === e.target); if (f) f.fit(); })); figs.forEach(f => ro.observe(f.cv)); }
+  if (window.IntersectionObserver) {
+    const io = new IntersectionObserver(es => es.forEach(e => { const f = figs.find(x => x.cv === e.target); if (f) f.vis = e.isIntersecting; }), { rootMargin: '120px' });
+    figs.forEach(f => io.observe(f.cv));
+  }
+
+  let last = performance.now(), tick = 0;
+  function frame(now) {
+    const dt = clamp((now - last) / 1000, 0, 0.05); last = now; tick++;
+    if (tick % 30 === 0) readColors();
+    for (const f of figs) {
+      if (!f.vis) continue;
+      if (!paused) f.m.step(dt, f.on);
+      f.draw();
+      if (tick % 6 === 0) f.report();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

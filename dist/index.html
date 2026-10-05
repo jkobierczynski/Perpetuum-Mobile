@@ -1,0 +1,2306 @@
+<!doctype html>
+<!-- Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski. SPDX-License-Identifier: GPL-3.0-only. Made with Claude Opus 5.5 Medium. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Perpetuum Mobile</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+/* Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+   SPDX-License-Identifier: GPL-3.0-only. Made with Claude Opus 5.5 Medium. */
+
+/* Layout: one drawing sheet. A title block carries the controls; twenty plates follow in three groups,
+   each with the figure on a grid ground at left and its specification at right. */
+:root{
+  --paper:#e9eef4; --plate:#f6f9fc; --ink:#14305a; --soft:#536a8c;
+  --line:#b4c3d6; --grid:#d9e2ed; --brass:#b9851f; --stamp:#b42a22; --water:#5f93d3;
+  --display:"Besley","Rockwell",Georgia,serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e2748; --plate:#123059; --ink:#e8f0fc; --soft:#9fb6d8;
+    --line:#345a90; --grid:#1a3c6c; --brass:#f2c35b; --stamp:#ff9384; --water:#6fb0ff;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e2748; --plate:#123059; --ink:#e8f0fc; --soft:#9fb6d8;
+  --line:#345a90; --grid:#1a3c6c; --brass:#f2c35b; --stamp:#ff9384; --water:#6fb0ff;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+.sheet{max-width:1080px;margin-inline:auto;padding-inline:clamp(16px,4vw,40px);padding-block:clamp(28px,5vw,56px);
+  display:flex;flex-direction:column;gap:clamp(48px,7vw,84px)}
+p,h1,h2,h3,dl,dd,figure{margin:0}
+
+.mast{display:flex;flex-direction:column;gap:20px}
+.eyebrow,.tag,.cell dt,.readout dt,figcaption,.swstate,.why,.jump{font-family:var(--mono);font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2.5rem,8vw,4.6rem);line-height:.98;letter-spacing:-.015em;text-wrap:balance}
+.lede{max-width:60ch;font-size:1.12rem}
+.titleblock{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1.5px;background:var(--ink);border:1.5px solid var(--ink)}
+.cell{background:var(--paper);padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cell dd{font-family:var(--mono);font-size:.92rem}
+.btn{font-family:var(--mono);font-size:.82rem;letter-spacing:.04em;color:var(--ink);background:var(--plate);
+  border:1.5px solid var(--ink);padding:6px 12px;cursor:pointer;align-self:flex-start}
+.btn:hover{background:var(--ink);color:var(--plate)}
+.jump{display:flex;flex-wrap:wrap;gap:8px 22px}
+.jump a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+
+.group{display:flex;flex-direction:column;gap:clamp(32px,5vw,52px)}
+.group>header{display:flex;flex-direction:column;gap:8px;border-top:4px double var(--ink);padding-top:20px}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5vw,2.9rem);line-height:1.05;text-wrap:balance}
+.group>header p:last-child{max-width:62ch}
+.plates{display:flex;flex-direction:column;gap:clamp(36px,5vw,56px)}
+.plate{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start;
+  border-top:1.5px solid var(--ink);padding-top:clamp(24px,4vw,40px)}
+@media (max-width:780px){.plate{grid-template-columns:minmax(0,1fr)}}
+.fig{display:flex;flex-direction:column;gap:12px;min-width:0}
+.stage{position:relative;border:1.5px solid var(--ink);background-color:var(--plate);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:20px 20px}
+canvas{display:block;width:100%;height:auto;aspect-ratio:420/340;max-width:100%}
+.stamp{position:absolute;right:14px;bottom:14px;max-width:calc(100% - 28px);transform:rotate(-7deg);border:2.5px solid var(--stamp);color:var(--stamp);
+  background:color-mix(in srgb,var(--plate) 86%,transparent);padding:6px 12px 5px;text-align:center;line-height:1.15}
+.stamp b{display:block;font-family:var(--display);font-weight:700;font-size:clamp(1.05rem,4vw,1.5rem);letter-spacing:.08em;text-transform:uppercase}
+.stamp span{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase}
+.readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-top:1px solid var(--line);padding-top:10px}
+.readout dd{font-family:var(--mono);font-size:1.05rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.readout dt{font-size:.68rem}
+
+.spec{display:flex;flex-direction:column;gap:14px;min-width:0}
+h3{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,3.4vw,1.95rem);line-height:1.1;text-wrap:balance}
+.spec p{max-width:62ch}
+.spec .why{margin-top:4px;color:var(--ink);font-weight:500}
+.switch{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:12px 14px;margin-block:4px;
+  border:1.5px solid var(--ink);background:var(--plate);color:var(--ink);font:inherit;cursor:pointer}
+.track{flex:none;width:46px;height:24px;border:1.5px solid var(--ink);border-radius:12px;position:relative;background:var(--paper)}
+.thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:var(--ink);transition:transform .18s}
+.switch[aria-checked="true"] .track{background:var(--ink)}
+.switch[aria-checked="true"] .thumb{transform:translateX(22px);background:var(--plate)}
+.swtext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.swname{font-weight:600}
+.switch[aria-checked="true"] .swstate{color:var(--stamp)}
+@media (prefers-reduced-motion:reduce){.thumb{transition:none}}
+
+.foot{border-top:1.5px solid var(--ink);padding-top:18px;color:var(--soft);font-size:.92rem;max-width:72ch}
+
+/* gallery and single-machine pages */
+.h1m{font-size:clamp(2rem,6.4vw,3.5rem)}
+.sheet.page{gap:clamp(22px,3.4vw,36px)}
+.tb3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.crumbs{font-family:var(--mono);font-size:.82rem;letter-spacing:.04em}
+.crumbs a,.sources a{color:var(--ink);text-underline-offset:3px}
+.pager{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5px;background:var(--ink);border:1.5px solid var(--ink)}
+.pager a{background:var(--paper);color:var(--ink);padding:12px 14px;text-decoration:none;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pager a:hover{background:var(--plate)}
+.pager .next{text-align:right}
+.pager span{font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+.pager b{font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.2}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2.2vw,24px)}
+@media (min-width:640px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:940px){.cards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.card{display:flex;flex-direction:column;gap:5px;color:var(--ink);text-decoration:none;min-width:0}
+.card .stage{margin-bottom:4px}
+.card .num{font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+.card .ct{font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.15}
+.card .cc{font-size:.82rem;color:var(--soft);line-height:1.35}
+.card:hover .stage,.card:focus-visible .stage{outline:2.5px solid var(--brass);outline-offset:1px}
+.card:hover .ct{text-decoration:underline;text-underline-offset:3px}
+.card .stamp{right:6px;bottom:6px;padding:2px 7px 1px;border-width:2px}
+.card .stamp b{font-size:.74rem}
+.sources{border-top:1.5px solid var(--ink);padding-top:18px;color:var(--soft);font-size:.86rem;display:flex;flex-direction:column;gap:8px}
+.sources ul{margin:0;padding-left:1.1em;columns:2 280px;column-gap:32px}
+.sources li{break-inside:avoid;margin-bottom:4px;overflow-wrap:anywhere}
+.colophon{font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;color:var(--soft);border-top:1px solid var(--line);padding-top:14px;line-height:1.7}
+.colophon a{color:var(--ink);text-underline-offset:3px}
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header class="mast">
+    <p class="eyebrow">56 machines · three kinds and some impostors</p>
+    <h1>Perpetuum Mobile</h1>
+    <p class="lede">56 machines that claim to run for ever. Physicists sort such machines into three kinds, by the rule each one has to break. On these sheets they do run for ever, because that rule is switched off. Open a machine to read its claim, switch the rule back on, and watch it stop.</p>
+    <dl class="titleblock">
+      <div class="cell"><dt>Sheets</dt><dd>56, one per machine</dd></div>
+      <div class="cell"><dt>Scale</dt><dd>None of it to scale</dd></div>
+      <div class="cell"><dt>Physics</dt><dd><button class="btn" id="master" type="button" data-off="Enforce on all 56" data-on="Suspend on all 56">Enforce on all 56</button></dd></div>
+      <div class="cell"><dt>Motion</dt><dd><button class="btn" id="pause" type="button">Pause</button></dd></div>
+    </dl>
+    <nav class="jump" aria-label="Groups"><a href="#first">First kind · figs. 1–24</a><a href="#second">Second kind · figs. 25–36</a><a href="#third">Third kind · figs. 37–48</a><a href="#impostors">Impostors · figs. 49–56</a></nav>
+  </header>
+
+  <section class="group" id="first" aria-labelledby="g1">
+    <header><p class="eyebrow">Figs. 1–24</p><h2 id="g1">The first kind</h2><p>Machines that give out more work than they take in. The first law of thermodynamics says energy is never created, so each of these hides a mistake in the bookkeeping.</p></header>
+    <div class="cards">
+      <a class="card unit" href="wheel.html"><div class="stage"><canvas data-m="wheel" role="img" aria-label="A wheel with twelve curved spokes. A ball rolls along each spoke, far from the axle on the right and close to it on the left."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 1</span><span class="ct">The overbalanced wheel</span><span class="cc">Overbalanced wheel, after Bhāskara II, c. 1150</span></a>
+      <a class="card unit" href="villard.html"><div class="stage"><canvas data-m="villard" role="img" aria-label="A wheel with seven hinged mallets on its rim. The mallets stand out on the right and hang down on the left."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 2</span><span class="ct">The hammer wheel</span><span class="cc">Wheel of seven mallets, after Villard de Honnecourt, c. 1230</span></a>
+      <a class="card unit" href="taccola.html"><div class="stage"><canvas data-m="taccola" role="img" aria-label="A hub with twelve jointed arms, each carrying a weight. Arms on the right are straight, arms on the left are folded at the elbow."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 3</span><span class="ct">The folding arms</span><span class="cc">Wheel with jointed arms, after Taccola, c. 1430</span></a>
+      <a class="card unit" href="windmill.html"><div class="stage"><canvas data-m="windmill" role="img" aria-label="A windmill linked by a belt and crank to a pair of bellows. The bellows blow puffs of air at the sails."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 4</span><span class="ct">The self-blowing windmill</span><span class="cc">Windmill and bellows, after Zimara, 1518</span></a>
+      <a class="card unit" href="stevin.html"><div class="stage"><canvas data-m="stevin" role="img" aria-label="A loop of eighteen beads draped over a triangular wedge with one long gentle side and one short steep side."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 5</span><span class="ct">The wreath of spheres</span><span class="cc">Chain on a wedge, after Simon Stevin, 1586</span></a>
+      <a class="card unit" href="fludd.html"><div class="stage"><canvas data-m="fludd" role="img" aria-label="Water falls from a trough onto a water wheel. The wheel drives an Archimedes screw that lifts water from a basin back to the trough."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 6</span><span class="ct">The water screw mill</span><span class="cc">Closed-cycle mill, after Robert Fludd, 1618</span></a>
+      <a class="card unit" href="wilkins.html"><div class="stage"><canvas data-m="wilkins" role="img" aria-label="An iron ball climbs a straight ramp toward a magnet on a post, drops through a hole near the top and rolls back down a curved ramp."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 7</span><span class="ct">The magnet and the ramp</span><span class="cc">Lodestone and ramp, described by John Wilkins, 1648</span></a>
+      <a class="card unit" href="boyle.html"><div class="stage"><canvas data-m="boyle" role="img" aria-label="A wide bowl of water whose stem runs down, round and up into a thin tube that bends over to pour back into the bowl."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 8</span><span class="ct">The self-filling flask</span><span class="cc">Self-filling flask, attributed to Robert Boyle</span></a>
+      <a class="card unit" href="papin.html"><div class="stage"><canvas data-m="papin" role="img" aria-label="A pleated bellows on a pivot, joined by a pipe to a vessel of mercury, with a trough to carry the mercury back."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 9</span><span class="ct">The mercury bellows</span><span class="cc">Anonymous French design, refuted by Denis Papin, 1685</span></a>
+      <a class="card unit" href="bessler.html"><div class="stage"><canvas data-m="bessler" role="img" aria-label="A large cloth-covered drum turning between two posts and winding up a box of bricks. A question mark covers its inside."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 10</span><span class="ct">Bessler's wheel</span><span class="cc">Sealed wheel of Johann Bessler, called Orffyreus, 1717</span></a>
+      <a class="card unit" href="bernoulli.html"><div class="stage"><canvas data-m="bernoulli" role="img" aria-label="A vessel of mixed liquid with a tube standing in it. A filter closes the foot of the tube and its top bends over the vessel."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 11</span><span class="ct">The two-liquid fountain</span><span class="cc">Filter and two liquids, attributed to Johann Bernoulli</span></a>
+      <a class="card unit" href="congreve.html"><div class="stage"><canvas data-m="congreve" role="img" aria-label="An endless band of sponge on three rollers with its lower run under water. One side stands upright and one side slopes."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 12</span><span class="ct">The sponge band</span><span class="cc">Capillary engine, after Sir William Congreve, 1827</span></a>
+      <a class="card unit" href="capfount.html"><div class="stage"><canvas data-m="capfount" role="img" aria-label="A thin tube rises from a dish of water and bends over. Drops fall from its end onto a small paddle wheel."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 13</span><span class="ct">The capillary fountain</span><span class="cc">Hair-thin tube standing in water</span></a>
+      <a class="card unit" href="siphon.html"><div class="stage"><canvas data-m="siphon" role="img" aria-label="An upside-down U tube with one narrow leg and one wide leg, both standing in the same dish of water."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 14</span><span class="ct">The fat-legged siphon</span><span class="cc">Siphon with one wide leg</span></a>
+      <a class="card unit" href="chain.html"><div class="stage"><canvas data-m="chain" role="img" aria-label="An endless chain over two wheels. One side hangs straight and the other zigzags over four rollers."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 15</span><span class="ct">The lopsided chain</span><span class="cc">Chain with a zigzag run</span></a>
+      <a class="card unit" href="ballscrew.html"><div class="stage"><canvas data-m="ballscrew" role="img" aria-label="Balls ride down one side of a wheel, roll along a chute into an Archimedes screw, and are carried back to the top."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 16</span><span class="ct">The ball mill</span><span class="cc">Wheel fed by its own screw</span></a>
+      <a class="card unit" href="floats.html"><div class="stage"><canvas data-m="floats" role="img" aria-label="A belt of hollow floats on two pulleys. One side of the belt rises through a tall tank of water, entering through a seal in the bottom."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 17</span><span class="ct">The float belt</span><span class="cc">Float belt in a water column</span></a>
+      <a class="card unit" href="bfloat.html"><div class="stage"><canvas data-m="bfloat" role="img" aria-label="A wheel under water carrying eight floats. The floats on the left are swollen and those on the right are small."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 18</span><span class="ct">The opening floats</span><span class="cc">Wheel of bellows floats under water</span></a>
+      <a class="card unit" href="drum.html"><div class="stage"><canvas data-m="drum" role="img" aria-label="A drum set in a slot in the wall of a water tank, with its right half under water and its left half in the air."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 19</span><span class="ct">The drum in the tank wall</span><span class="cc">Drum half in water, half in air</span></a>
+      <a class="card unit" href="shield.html"><div class="stage"><canvas data-m="shield" role="img" aria-label="A wheel with eight magnets on its rim beside a fixed magnet. A curved plate covers part of the rim below the fixed magnet."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 20</span><span class="ct">The shielded magnet wheel</span><span class="cc">Rotor of magnets with a shield</span></a>
+      <a class="card unit" href="gears.html"><div class="stage"><canvas data-m="gears" role="img" aria-label="A small gear meshed with a large gear, with a crossed belt joining pulleys on the two shafts."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 21</span><span class="ct">The self-multiplying gears</span><span class="cc">Gear train closed on itself</span></a>
+      <a class="card unit" href="motor.html"><div class="stage"><canvas data-m="motor" role="img" aria-label="An electric motor and a dynamo on a bench, joined by a belt. Wires run from the dynamo through a lamp and back to the motor."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 22</span><span class="ct">The motor and the dynamo</span><span class="cc">Motor and dynamo in a ring</span></a>
+      <a class="card unit" href="waterfuel.html"><div class="stage"><canvas data-m="waterfuel" role="img" aria-label="A cell splitting water into gas, a pipe carrying the gas to an engine and dynamo, wires back to the cell and a pipe returning water."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 23</span><span class="ct">Water as fuel</span><span class="cc">Water split and burned in a ring</span></a>
+      <a class="card unit" href="cart.html"><div class="stage"><canvas data-m="cart" role="img" aria-label="An iron cart with an arm that holds a horseshoe magnet just ahead of its front plate."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 24</span><span class="ct">The magnet on a stick</span><span class="cc">Self-pulling cart</span></a>
+    </div>
+  </section>
+
+  <section class="group" id="second" aria-labelledby="g2">
+    <header><p class="eyebrow">Figs. 25–36</p><h2 id="g2">The second kind</h2><p>Machines that create no energy. They take heat from surroundings at a single temperature and turn it into work, which the second law of thermodynamics forbids.</p></header>
+    <div class="cards">
+      <a class="card unit" href="demon.html"><div class="stage"><canvas data-m="demon" role="img" aria-label="A box of gas molecules divided by a wall with a door. A small demon sits on the wall and works the door."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 25</span><span class="ct">Maxwell's demon</span><span class="cc">Sorting demon, after James Clerk Maxwell, 1867</span></a>
+      <a class="card unit" href="loschmidt.html"><div class="stage"><canvas data-m="loschmidt" role="img" aria-label="A tall column of gas molecules, denser at the bottom, with an engine wheel connected to its top and bottom."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 26</span><span class="ct">Loschmidt's column</span><span class="cc">Gas column under gravity, after Josef Loschmidt, 1876</span></a>
+      <a class="card unit" href="zero.html"><div class="stage"><canvas data-m="zero" role="img" aria-label="A boiler of liquid ammonia feeds vapour to a piston and flywheel. The exhaust passes through a condenser coil and back to the boiler."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 27</span><span class="ct">The zeromotor</span><span class="cc">Ammonia engine, after John Gamgee, 1881</span></a>
+      <a class="card unit" href="ship.html"><div class="stage"><canvas data-m="ship" role="img" aria-label="A steamship with no smoke crossing the sea and leaving a trail of ice blocks behind it."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 28</span><span class="ct">The sea-heat steamer</span><span class="cc">Ship driven by the heat of the sea</span></a>
+      <a class="card unit" href="mirror.html"><div class="stage"><canvas data-m="mirror" role="img" aria-label="Two blocks facing each other with a mirror between them. Dots of radiation cross from left to right and are turned back from right to left."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 29</span><span class="ct">The one-way mirror</span><span class="cc">Two warm bodies and a one-way mirror</span></a>
+      <a class="card unit" href="trapdoor.html"><div class="stage"><canvas data-m="trapdoor" role="img" aria-label="A box of gas molecules divided by a wall with a hinged flap. A pipe with a turbine joins the two halves underneath."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 30</span><span class="ct">The trapdoor</span><span class="cc">Spring flap, after Smoluchowski, 1912</span></a>
+      <a class="card unit" href="ratchet.html"><div class="stage"><canvas data-m="ratchet" role="img" aria-label="A paddle wheel in a box of gas molecules, linked by a belt to a ratchet wheel with a pawl. A cord from the ratchet lifts a small weight."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 31</span><span class="ct">The Brownian ratchet</span><span class="cc">Ratchet and pawl, after Smoluchowski, 1912</span></a>
+      <a class="card unit" href="szilard.html"><div class="stage"><canvas data-m="szilard" role="img" aria-label="A single molecule in a box. A partition drops into the middle, slides to one side as a piston and lifts a weight, while a panel records left or right."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 32</span><span class="ct">Szilard's engine</span><span class="cc">One-molecule engine, after Leo Szilard, 1929</span></a>
+      <a class="card unit" href="diode.html"><div class="stage"><canvas data-m="diode" role="img" aria-label="A loop of wire with a resistor, a diode and a capacitor. A trace in the middle shows the current in the loop."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 33</span><span class="ct">The noise rectifier</span><span class="cc">Resistor and diode, after Léon Brillouin, 1950</span></a>
+      <a class="card unit" href="thermoloop.html"><div class="stage"><canvas data-m="thermoloop" role="img" aria-label="A ring made half of copper and half of bismuth, with a compass needle in the middle."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 34</span><span class="ct">The two-metal ring</span><span class="cc">Ring of copper and bismuth</span></a>
+      <a class="card unit" href="radiometer.html"><div class="stage"><canvas data-m="radiometer" role="img" aria-label="A glass bulb holding four vanes on a pivot, each black on one face and bright on the other, with heat rays arriving from all sides."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 35</span><span class="ct">The radiometer in the dark</span><span class="cc">Light mill, after William Crookes, 1873</span></a>
+      <a class="card unit" href="heatpump.html"><div class="stage"><canvas data-m="heatpump" role="img" aria-label="A heat pump and a heat engine between a warm bar and a cold bar, with arrows for heat and a work arrow from the engine to the pump."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 36</span><span class="ct">The heat pump loop</span><span class="cc">Heat pump driving its own engine</span></a>
+    </div>
+  </section>
+
+  <section class="group" id="third" aria-labelledby="g3">
+    <header><p class="eyebrow">Figs. 37–48</p><h2 id="g3">The third kind</h2><p>Machines that keep moving because nothing takes their energy away. They make no claim to give out work, and they fail because some loss always remains.</p></header>
+    <div class="cards">
+      <a class="card unit" href="pend.html"><div class="stage"><canvas data-m="pend" role="img" aria-label="A pendulum swinging inside a glass bell jar, above a scale marked in degrees."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 37</span><span class="ct">The frictionless pendulum</span><span class="cc">Pendulum under an evacuated bell jar</span></a>
+      <a class="card unit" href="bowl.html"><div class="stage"><canvas data-m="bowl" role="img" aria-label="A ball rolling to and fro in a shallow bowl, with a dashed line at the height it was released from."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 38</span><span class="ct">The ball in the bowl</span><span class="cc">Ball rolling in a frictionless bowl</span></a>
+      <a class="card unit" href="spring.html"><div class="stage"><canvas data-m="spring" role="img" aria-label="A weight bobbing up and down on a coil spring beside a ruler."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 39</span><span class="ct">The weight on a spring</span><span class="cc">Weight on a perfect spring</span></a>
+      <a class="card unit" href="cradle.html"><div class="stage"><canvas data-m="cradle" role="img" aria-label="Five balls hanging in a row from a frame. The end balls swing out in turn."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 40</span><span class="ct">Newton's cradle</span><span class="cc">Cradle of perfectly elastic balls</span></a>
+      <a class="card unit" href="top.html"><div class="stage"><canvas data-m="top" role="img" aria-label="A spinning top standing on its point."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 41</span><span class="ct">The spinning top</span><span class="cc">Top on a perfect point</span></a>
+      <a class="card unit" href="fork.html"><div class="stage"><canvas data-m="fork" role="img" aria-label="A tuning fork with trembling prongs, under a glass jar."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 42</span><span class="ct">The tuning fork</span><span class="cc">Tuning fork in a vacuum</span></a>
+      <a class="card unit" href="fly.html"><div class="stage"><canvas data-m="fly" role="img" aria-label="A heavy flywheel spinning inside a sealed round housing, with a ring of magnets around its shaft."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 43</span><span class="ct">The flywheel in a vacuum</span><span class="cc">Flywheel on magnetic bearings</span></a>
+      <a class="card unit" href="orbit.html"><div class="stage"><canvas data-m="orbit" role="img" aria-label="A small satellite circling the Earth."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 44</span><span class="ct">The satellite</span><span class="cc">Satellite in low orbit</span></a>
+      <a class="card unit" href="light.html"><div class="stage"><canvas data-m="light" role="img" aria-label="A flash of light bouncing to and fro between two facing mirrors."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 45</span><span class="ct">The trapped flash</span><span class="cc">Flash of light between two mirrors</span></a>
+      <a class="card unit" href="lc.html"><div class="stage"><canvas data-m="lc" role="img" aria-label="A loop of wire joining a capacitor and a coil, with a trace of the voltage swinging up and down."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 46</span><span class="ct">The ringing circuit</span><span class="cc">Coil and capacitor with no resistance</span></a>
+      <a class="card unit" href="ring.html"><div class="stage"><canvas data-m="ring" role="img" aria-label="A metal ring in a flask of liquid helium. Dots show a current circling the ring and arrows show its magnetic field."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 47</span><span class="ct">The superconducting ring</span><span class="cc">Persistent current in a ring of lead</span></a>
+      <a class="card unit" href="superfluid.html"><div class="stage"><canvas data-m="superfluid" role="img" aria-label="A ring-shaped channel of liquid seen from above, with marks showing the liquid flowing round."></canvas><div class="stamp" hidden><b>Refused</b></div></div><span class="num">Fig. 48</span><span class="ct">The superfluid ring</span><span class="cc">Superfluid helium in a ring</span></a>
+    </div>
+  </section>
+
+  <section class="group" id="impostors" aria-labelledby="g4">
+    <header><p class="eyebrow">Figs. 49–56</p><h2 id="g4">The impostors</h2><p>Machines that did run, some for a season and some for centuries, on energy that nobody mentioned. Two were frauds. The rest are honest devices that live off small changes in their surroundings.</p></header>
+    <div class="cards">
+      <a class="card unit" href="redheffer.html"><div class="stage"><canvas data-m="redheffer" role="img" aria-label="A machine with a horizontal gear wheel and weights on ramps, below a boarded ceiling."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 49</span><span class="ct">Redheffer's machine</span><span class="cc">Charles Redheffer, Philadelphia, 1812</span></a>
+      <a class="card unit" href="keely.html"><div class="stage"><canvas data-m="keely" role="img" aria-label="A workshop with a spinning engine, a pressure gauge and two tuning forks, standing on a floor whose underside is hidden."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 50</span><span class="ct">The Keely motor</span><span class="cc">John Keely, Philadelphia, 1872 to 1898</span></a>
+      <a class="card unit" href="cox.html"><div class="stage"><canvas data-m="cox" role="img" aria-label="A clock in a cabinet linked by a chain to a large mercury barometer."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 51</span><span class="ct">Cox's timepiece</span><span class="cc">James Cox and John Joseph Merlin, 1760s</span></a>
+      <a class="card unit" href="watch.html"><div class="stage"><canvas data-m="watch" role="img" aria-label="The back of a wristwatch, showing a half-disc rotor swinging over the gears and balance wheel."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 52</span><span class="ct">The self-winding watch</span><span class="cc">Automatic watch, after Perrelet, c. 1777</span></a>
+      <a class="card unit" href="oxford.html"><div class="stage"><canvas data-m="oxford" role="img" aria-label="Two tall dry piles, each with a bell beneath it, and a small ball swinging between the bells under a glass jar."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 53</span><span class="ct">The Oxford Electric Bell</span><span class="cc">Clarendon Laboratory, Oxford, ringing since 1840</span></a>
+      <a class="card unit" href="beverly.html"><div class="stage"><canvas data-m="beverly" role="img" aria-label="A clock face, a driving weight on a chain, and a sealed box of air with a diaphragm, under a sky where the sun and moon cross in turn."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 54</span><span class="ct">The Beverly Clock</span><span class="cc">Arthur Beverly, Dunedin, 1864</span></a>
+      <a class="card unit" href="atmos.html"><div class="stage"><canvas data-m="atmos" role="img" aria-label="A clock in a glass case with a slowly twisting pendulum, a gas capsule that swells and shrinks, and a thermometer beside it."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 55</span><span class="ct">The Atmos clock</span><span class="cc">Jean-Léon Reutter, 1928</span></a>
+      <a class="card unit" href="bird.html"><div class="stage"><canvas data-m="bird" role="img" aria-label="A glass bird on a pivot tipping forward to dip its beak in a glass of water."></canvas><div class="stamp" hidden><b>Unmasked</b></div></div><span class="num">Fig. 56</span><span class="ct">The drinking bird</span><span class="cc">Glass toy, patented by Miles V. Sullivan, 1946</span></a>
+    </div>
+  </section>
+
+  <p class="foot">In 1775 the Royal Academy of Sciences in Paris resolved to stop examining proposals for perpetual motion. With its rule suspended, each figure here is helped along by an unseen hand. With the rule in force it runs down as the real thing would. The numbers in the readouts are illustrative.</p>
+  <div class="sources"><p>Names, dates and mechanisms were checked against these sources in October 2026.</p>
+    <ul><li><a href="https://en.wikipedia.org/wiki/History_of_perpetual_motion_machines">History of perpetual motion machines (Wikipedia)</a></li><li><a href="https://dsimanek.vialattea.net/museum/unwork.htm">Donald Simanek, The Museum of Unworkable Devices</a></li><li><a href="https://mostre.museogalileo.it/motoperpetuo/en/before-leonardo/the-sienese-engineers/perpetual-wheel-with-articulated-arms.html">Museo Galileo, Taccola's wheel with articulated arms</a></li><li><a href="https://www.lindahall.org/about/news/scientist-of-the-day/simon-stevin/">Linda Hall Library, Simon Stevin</a></li><li><a href="https://britannica.com/technology/closed-cycle-water-mill">Britannica, closed-cycle water mill</a></li><li><a href="https://www.scientificamerican.com/article/perpetual-motion-1911-11-18/">Scientific American (1911), on Papin and the mercury bellows</a></li><li><a href="https://en.wikipedia.org/wiki/Johann_Bessler">Johann Bessler (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Charles_Redheffer">Charles Redheffer (Wikipedia)</a></li><li><a href="https://www.wikipedia.org/wiki/John_Keely">John Keely (Wikipedia)</a></li><li><a href="https://www.chemistryworld.com/opinion/the-impossible-dream-of-perpetual-motion-machines/3004957.article">Chemistry World, on Gamgee's zeromotor</a></li><li><a href="https://en.wikipedia.org/wiki/Maxwell%27s_demon">Maxwell's demon (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Brownian_ratchet">Brownian ratchet (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Crookes_radiometer">Crookes radiometer (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Cox%27s_timepiece">Cox's timepiece (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Atmos_clock">Atmos clock (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Beverly_Clock">Beverly Clock (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Oxford_Electric_Bell">Oxford Electric Bell (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Drinking_bird">Drinking bird (Wikipedia)</a></li><li><a href="https://en.wikipedia.org/wiki/Automatic_watch">Automatic watch (Wikipedia)</a></li></ul></div>
+  <p class="colophon">Perpetuum Mobile · Copyright © 2026 Jurgen Kobierczynski · Free software under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License, version 3</a>, with no warranty · Made with Claude Opus 5.5 Medium</p>
+</main>
+<script>
+(() => {
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Drawing helpers shared by every machine. build.js wraps this file, the machines and runtime.js in one function.
+  const TAU = Math.PI * 2;
+  const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+  const C = {};
+  function readColors() {
+    const s = getComputedStyle(document.documentElement);
+    for (const k of ['paper', 'plate', 'ink', 'soft', 'line', 'brass', 'stamp', 'water']) C[k] = s.getPropertyValue('--' + k).trim();
+  }
+  readColors();
+
+  /* ---------- drawing helpers ---------- */
+  const L = (g, x1, y1, x2, y2) => { g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); };
+  const hatch = (g, x0, x1, y) => { for (let x = x0 + 6; x <= x1; x += 9) L(g, x, y, x - 6, y + 6); };
+  const disc = (g, x, y, r, fill, stroke, lw) => {
+    g.beginPath(); g.arc(x, y, r, 0, TAU);
+    if (fill) { g.fillStyle = fill; g.fill(); }
+    if (stroke) { g.strokeStyle = stroke; g.lineWidth = lw || 1.4; g.stroke(); }
+  };
+  const poly = (g, pts, close) => {
+    g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
+    if (close) g.closePath();
+  };
+  const spokes = (g, cx, cy, r0, r1, n, th) => {
+    for (let k = 0; k < n; k++) { const a = th + k * TAU / n; L(g, cx + r0 * Math.cos(a), cy + r0 * Math.sin(a), cx + r1 * Math.cos(a), cy + r1 * Math.sin(a)); }
+  };
+  const arrow = (g, x1, y1, x2, y2, h) => {
+    h = h || 7; const a = Math.atan2(y2 - y1, x2 - x1);
+    L(g, x1, y1, x2 - Math.cos(a) * h * 0.6, y2 - Math.sin(a) * h * 0.6);
+    g.beginPath(); g.moveTo(x2, y2);
+    g.lineTo(x2 - h * Math.cos(a - 0.45), y2 - h * Math.sin(a - 0.45));
+    g.lineTo(x2 - h * Math.cos(a + 0.45), y2 - h * Math.sin(a + 0.45));
+    g.closePath(); g.fillStyle = g.strokeStyle; g.fill();
+  };
+  const rr = (g, x, y, w, h, r) => {
+    g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+  };
+  let QUIET = false;
+  const label = (g, s, x, y, al) => { if (QUIET) return; g.fillStyle = C.soft; g.textAlign = al || 'left'; g.fillText(s, x, y); g.textAlign = 'left'; };
+  const ground = (g, x0, x1, y) => { g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, x0, y, x1, y); g.lineWidth = 1; hatch(g, x0, x1, y); };
+  const gauss = () => Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(TAU * Math.random());
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const $ = id => document.getElementById(id);
+
+  // a path you can walk along by distance
+  function mkPath(pts, closed) {
+    const P = closed ? pts.concat([pts[0]]) : pts, cum = [0];
+    for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]));
+    const len = cum[cum.length - 1];
+    function at(s) {
+      s = closed ? ((s % len) + len) % len : clamp(s, 0, len);
+      let lo = 0, hi = cum.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (cum[m] <= s) lo = m; else hi = m; }
+      const f = (s - cum[lo]) / ((cum[hi] - cum[lo]) || 1);
+      return [P[lo][0] + (P[hi][0] - P[lo][0]) * f, P[lo][1] + (P[hi][1] - P[lo][1]) * f];
+    }
+    function trace(g, s0, s1) {
+      g.beginPath();
+      const n = Math.max(2, Math.ceil(Math.abs(s1 - s0) / 3));
+      for (let i = 0; i <= n; i++) { const p = at(s0 + (s1 - s0) * i / n); i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]); }
+      g.stroke();
+    }
+    return { len, at, trace, pts: P };
+  }
+  // outline of a belt run round equal rollers, travelling anticlockwise on screen
+  function beltPts(cs, r) {
+    const n = cs.length, out = [], nm = [];
+    for (let i = 0; i < n; i++) { const a = cs[i], b = cs[(i + 1) % n], d = Math.hypot(b[0] - a[0], b[1] - a[1]); nm.push([-(b[1] - a[1]) / d, (b[0] - a[0]) / d]); }
+    for (let i = 0; i < n; i++) {
+      const a = cs[i], b = cs[(i + 1) % n], n1 = nm[i], n2 = nm[(i + 1) % n];
+      out.push([a[0] + r * n1[0], a[1] + r * n1[1]], [b[0] + r * n1[0], b[1] + r * n1[1]]);
+      const a1 = Math.atan2(n1[1], n1[0]); let da = Math.atan2(n2[1], n2[0]) - a1;
+      while (da > 0) da -= TAU; while (da <= -TAU) da += TAU;
+      for (let k = 1; k < 8; k++) { const t = a1 + da * k / 8; out.push([b[0] + r * Math.cos(t), b[1] + r * Math.sin(t)]); }
+    }
+    return out;
+  }
+  // steady while helped along; runs down to a dead stop when the rule is in force
+  function drive(run, tau) {
+    const d = { v: run, still: 0,
+      step(dt, on) {
+        if (on) { d.v = Math.max(0, d.v - (d.v / tau + 0.05 * run) * dt); d.still = d.v === 0 ? d.still + dt : 0; }
+        else { d.v += (run - d.v) * Math.min(1, 1.6 * dt); d.still = 0; }
+      },
+      get frac() { return d.v / run; },
+      stalled() { return d.still > 0.6; } };
+    return d;
+  }
+
+  const gear = (g, cx, cy, r, n, th, fill) => {
+    const w = TAU / n; g.beginPath();
+    for (let k = 0; k < n; k++) {
+      const a = th + k * w;
+      [[-0.22, r + 4], [0.22, r + 4], [0.32, r - 4], [0.68, r - 4]].forEach((q, j) => {
+        const x = cx + q[1] * Math.cos(a + q[0] * w), y = cy + q[1] * Math.sin(a + q[0] * w);
+        k + j ? g.lineTo(x, y) : g.moveTo(x, y);
+      });
+    }
+    g.closePath(); if (fill) { g.fillStyle = fill; g.fill(); } g.stroke();
+  };
+
+  const M = {};
+  /* ---------- 1 · overbalanced wheel ---------- */
+  M.wheel = g => {
+    const cx = 210, cy = 158, R = 118, r0 = 28, r1 = R - 14, N = 12, K = 0.75, RUN = 0.9;
+    let th = 0, om = RUN, still = 0, right = 5, left = 7;
+    const s = new Array(N).fill(0.5);
+    const pt = (i, t) => { const a = th + i * TAU / N + K * t * t, r = r0 + (r1 - r0) * t; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+    function lowest(i) { let best = 0, by = -1e9; for (let k = 0; k <= 24; k++) { const y = pt(i, k / 24)[1]; if (y > by) { by = y; best = k / 24; } } return best; }
+    for (let i = 0; i < N; i++) s[i] = lowest(i);
+    return {
+      step(dt, on) {
+        let sum = 0; right = 0; left = 0;
+        for (let i = 0; i < N; i++) {
+          s[i] += clamp(lowest(i) - s[i], -2.4 * dt, 2.4 * dt);
+          const x = pt(i, s[i])[0] - cx; sum += x / R; if (x > 1) right++; else if (x < -1) left++;
+        }
+        if (on) { om += (20 * sum / N - 0.3 * om) * dt; still = Math.abs(om) < 0.04 ? still + dt : 0; }
+        else { om += (RUN - om) * Math.min(1, 1.6 * dt); still = 0; }
+        th += om * dt;
+      },
+      draw() {
+        g.strokeStyle = C.line; g.lineWidth = 1; g.setLineDash([16, 4, 2, 4]);
+        L(g, cx - R - 26, cy, cx + R + 26, cy); L(g, cx, cy - R - 24, cx, cy + R + 30); g.setLineDash([]);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, cx, cy, cx - 62, 318); L(g, cx, cy, cx + 62, 318);
+        ground(g, cx - 112, cx + 112, 318);
+        disc(g, cx, cy, R, null, C.ink, 2); disc(g, cx, cy, R - 6, null, C.ink, 1);
+        g.strokeStyle = C.ink; g.lineWidth = 1.4;
+        for (let i = 0; i < N; i++) { const pp = []; for (let k = 0; k <= 14; k++) pp.push(pt(i, k / 14)); poly(g, pp); g.stroke(); }
+        for (let i = 0; i < N; i++) { const p = pt(i, s[i]); disc(g, p[0], p[1], 6.5, C.brass, C.ink, 1.3); }
+        disc(g, cx, cy, 12, C.plate, C.ink, 2); disc(g, cx, cy, 2.5, C.ink);
+        g.strokeStyle = C.soft; g.lineWidth = 1.3; g.beginPath(); g.arc(cx, cy, R + 13, -1.15, -0.6); g.stroke();
+        const a = -0.55; arrow(g, cx + (R + 13) * Math.cos(a - 0.06), cy + (R + 13) * Math.sin(a - 0.06), cx + (R + 13) * Math.cos(a) - 0.5, cy + (R + 13) * Math.sin(a) + 1, 8);
+      },
+      read() { return [(Math.abs(om) < 0.005 ? 0 : om * 60 / TAU).toFixed(1) + ' rpm', right, left]; },
+      stalled(on) { return on && still > 1.2; }
+    };
+  };
+
+  /* ---------- Villard's hammer wheel ---------- */
+  M.villard = g => {
+    const d = drive(0.8, 2.6), cx = 210, cy = 165, R = 92, N = 7, AL = 38, rho = new Array(N).fill(0);
+    let th = 0, right = 4, left = 3;
+    const settle = (i, lim) => {
+      const a = (((th + i * TAU / N) % TAU) + TAU) % TAU, dn = a > 1.5 * Math.PI + 0.2 || a < 0.5 * Math.PI;
+      if (dn && rho[i] < -Math.PI / 2) rho[i] += TAU;      // over the top: the mallet flops forward
+      if (!dn && rho[i] > 0.01) rho[i] = 0;
+      rho[i] += clamp((dn ? 0 : clamp(Math.PI / 2 - a, -Math.PI, 0)) - rho[i], -lim, lim);
+    };
+    for (let i = 0; i < N; i++) settle(i, 9);
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; for (let i = 0; i < N; i++) settle(i, 7 * dt); },
+      draw() {
+        ground(g, 80, 340, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, cx, cy, cx - 56, 318); L(g, cx, cy, cx + 56, 318);
+        disc(g, cx, cy, R, null, C.ink, 2); disc(g, cx, cy, R - 6, null, C.ink, 1);
+        g.lineWidth = 1.3; spokes(g, cx, cy, 10, R - 6, N, th);
+        right = 0; left = 0;
+        for (let i = 0; i < N; i++) {
+          const a = th + i * TAU / N, px = cx + R * Math.cos(a), py = cy + R * Math.sin(a), b = a + rho[i];
+          const ex = px + AL * Math.cos(b), ey = py + AL * Math.sin(b), nx = -Math.sin(b), ny = Math.cos(b);
+          g.strokeStyle = C.ink; g.lineWidth = 2.4; L(g, px, py, ex, ey);
+          g.lineCap = 'butt'; g.lineWidth = 12; L(g, ex - nx * 10, ey - ny * 10, ex + nx * 10, ey + ny * 10);
+          g.strokeStyle = C.brass; g.lineWidth = 9; L(g, ex - nx * 8.5, ey - ny * 8.5, ex + nx * 8.5, ey + ny * 8.5); g.lineCap = 'round';
+          disc(g, px, py, 3, C.plate, C.ink, 1.4);
+          if (ex > cx + 1) right++; else if (ex < cx - 1) left++;
+        }
+        disc(g, cx, cy, 10, C.plate, C.ink, 2);
+      },
+      read() { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', right, left]; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- Taccola's folding arms ---------- */
+  M.taccola = g => {
+    const d = drive(0.8, 2.6), cx = 210, cy = 160, N = 12, A1 = 56, A2 = 54, fold = [];
+    let th = 0, far = 6;
+    const want = i => { const a = (((th + i * TAU / N) % TAU) + TAU) % TAU; return a > 1.5 * Math.PI || a < 0.5 * Math.PI ? 0 : 2.3; };
+    for (let i = 0; i < N; i++) fold.push(want(i));
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; for (let i = 0; i < N; i++) fold[i] += clamp(want(i) - fold[i], -4 * dt, 4 * dt); },
+      draw() {
+        ground(g, 80, 340, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, cx, cy, cx - 56, 318); L(g, cx, cy, cx + 56, 318);
+        far = 0;
+        for (let i = 0; i < N; i++) {
+          const a = th + i * TAU / N, x1 = cx + A1 * Math.cos(a), y1 = cy + A1 * Math.sin(a), b = a - fold[i];
+          const x2 = x1 + A2 * Math.cos(b), y2 = y1 + A2 * Math.sin(b);
+          g.strokeStyle = C.ink; g.lineWidth = 2.8; L(g, cx, cy, x1, y1); g.lineWidth = 2.2; L(g, x1, y1, x2, y2);
+          disc(g, x1, y1, 3.2, C.plate, C.ink, 1.4); disc(g, x2, y2, 9, C.brass, C.ink, 1.4);
+          if (fold[i] < 0.5) far++;
+        }
+        disc(g, cx, cy, 11, C.plate, C.ink, 2); disc(g, cx, cy, 2.5, C.ink);
+      },
+      read() { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', far, N - far]; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 2 · self-blowing windmill ---------- */
+  M.windmill = g => {
+    const d = drive(1.5, 2.6), hub = [120, 170], cw = [355, 70], pv = [250, 170];
+    const low = [pv[0] + 110 * Math.cos(0.12), pv[1] + 110 * Math.sin(0.12)];
+    let th = 0, puff = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; puff += d.v * dt * 26; },
+      draw() {
+        ground(g, 40, 392, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2;
+        L(g, hub[0], hub[1], hub[0], 318); L(g, 290, 176, 290, 318); L(g, 350, 183, 350, 318);
+        L(g, cw[0], cw[1], 376, cw[1]); L(g, 376, cw[1], 376, 318);
+        g.strokeStyle = C.soft; g.lineWidth = 1.1;
+        L(g, hub[0] + 3.1, hub[1] + 7.4, cw[0] + 3.1, cw[1] + 7.4); L(g, hub[0] - 3.1, hub[1] - 7.4, cw[0] - 3.1, cw[1] - 7.4);
+        // bellows, worked by the crank
+        const pin = [cw[0] + 12 * Math.cos(th), cw[1] + 12 * Math.sin(th)];
+        const al = Math.asin((40 - 12 * Math.sin(th)) / 110), tip = [pv[0] + 110 * Math.cos(al), pv[1] - 110 * Math.sin(al)];
+        const body = [pv];
+        for (let k = 0; k <= 6; k++) {
+          const t = k / 6; let x = tip[0] + (low[0] - tip[0]) * t, y = tip[1] + (low[1] - tip[1]) * t;
+          if (k % 2) { const dd = Math.hypot(pv[0] - x, pv[1] - y); x += (pv[0] - x) / dd * 10; y += (pv[1] - y) / dd * 10; }
+          body.push([x, y]);
+        }
+        poly(g, body, true); g.fillStyle = C.plate; g.fill(); g.strokeStyle = C.ink; g.lineWidth = 1.3; g.stroke();
+        g.lineWidth = 3.4; L(g, pv[0], pv[1], tip[0], tip[1]); L(g, pv[0], pv[1], low[0], low[1]);
+        g.lineWidth = 5; L(g, pv[0], pv[1], 216, 170);
+        g.lineWidth = 1.6; L(g, pin[0], pin[1], tip[0], tip[1]);
+        disc(g, cw[0], cw[1], 14, C.plate, C.ink, 1.8); disc(g, pin[0], pin[1], 3, C.ink);
+        // the gust
+        g.strokeStyle = C.soft; g.lineWidth = 1.6;
+        for (let k = 0; k < 4; k++) {
+          const u = ((puff + k * 19) % 76) / 76;
+          g.globalAlpha = (1 - u) * d.frac; g.beginPath(); g.arc(222 - u * 70, 170, 12, Math.PI - 0.6, Math.PI + 0.6); g.stroke();
+        }
+        g.globalAlpha = 1;
+        // sails
+        for (let k = 0; k < 4; k++) {
+          const a = th + k * Math.PI / 2, ux = Math.cos(a), uy = Math.sin(a), nx = -uy, ny = ux;
+          const P = (al2, w) => [hub[0] + ux * al2 + nx * w, hub[1] + uy * al2 + ny * w];
+          poly(g, [P(24, 0), P(80, 0), P(80, 20), P(24, 20)], true); g.fillStyle = C.plate; g.fill();
+          g.strokeStyle = C.ink; g.lineWidth = 1.2; g.stroke();
+          for (const q of [38, 52, 66]) { const p1 = P(q, 0), p2 = P(q, 20); L(g, p1[0], p1[1], p2[0], p2[1]); }
+          g.lineWidth = 2.2; const e = P(80, 0); L(g, hub[0], hub[1], e[0], e[1]);
+        }
+        disc(g, hub[0], hub[1], 8, C.plate, C.ink, 2);
+        label(g, 'bellows', 262, 208, 'right');
+      },
+      read(on) { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', '100 J', on ? 'about 20 J' : '100 J']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 3 · Stevin's wreath of spheres ---------- */
+  M.stevin = g => {
+    const pts = [[256.9, 65.9], [64.9, 225.9]];
+    for (let i = 0; i <= 24; i++) { const t = i / 24, u = 1 - t; pts.push([u * u * 62 + 2 * u * t * 200 + t * t * 338, u * u * 232 + 2 * u * t * 372 + t * t * 232]); }
+    pts.push([337.4, 228.9], [269.4, 68.9], [263, 62]);
+    const path = mkPath(pts, true), n = 18, d = drive(46, 2.2);
+    let s = 0, lng = 0, sht = 0;
+    return {
+      step(dt, on) { d.step(dt, on); s += d.v * dt; },
+      draw() {
+        poly(g, [[70, 232], [330, 232], [262, 72]], true);
+        g.fillStyle = C.plate; g.fill(); g.globalAlpha = 0.07; g.fillStyle = C.ink; g.fill(); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 2; g.stroke();
+        poly(g, path.pts); g.strokeStyle = C.soft; g.lineWidth = 1.2; g.stroke();
+        lng = 0; sht = 0;
+        for (let k = 0; k < n; k++) {
+          const p = path.at(s + k * path.len / n); disc(g, p[0], p[1], 8, C.brass, C.ink, 1.3);
+          if (p[1] < 226) { if (p[0] < 262) lng++; else sht++; }
+        }
+        label(g, 'long, gentle', 34, 128); label(g, 'short, steep', 308, 128);
+      },
+      read() { return [lng, sht, (d.v / 10).toFixed(1) + ' cm/s']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 4 · Fludd's water screw ---------- */
+  M.fludd = g => {
+    const d = drive(1.3, 3), W = [300, 196], R = 62, A0 = [62, 300], A1 = [128, 78], nx = 0.958, ny = 0.285, hw = 13;
+    let th = 0, ph = 0, flow = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th -= d.v * dt; ph += d.v * dt * 3; flow += d.v * dt * 46; },
+      draw() {
+        const f = d.frac;
+        g.globalAlpha = 0.4; g.fillStyle = C.water; g.fillRect(30, 292, 360, 26); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 30, 278, 30, 318); L(g, 30, 318, 390, 318); L(g, 390, 318, 390, 278);
+        g.lineWidth = 2.2; L(g, W[0], W[1], 272, 318); L(g, W[0], W[1], 328, 318);
+        g.strokeStyle = C.soft; g.lineWidth = 1.1; L(g, 300, 188, 96, 183); L(g, 300, 204, 96, 199);
+        // the screw
+        poly(g, [[A0[0] - nx * hw, A0[1] - ny * hw], [A1[0] - nx * hw, A1[1] - ny * hw], [A1[0] + nx * hw, A1[1] + ny * hw], [A0[0] + nx * hw, A0[1] + ny * hw]], true);
+        g.fillStyle = C.plate; g.fill(); g.globalAlpha = 0.3 * f; g.fillStyle = C.water; g.fill(); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.6; g.stroke();
+        g.beginPath();
+        for (let i = 0; i <= 90; i++) {
+          const t = i / 90, o = hw * Math.sin(TAU * t * 9 - ph), x = A0[0] + (A1[0] - A0[0]) * t + nx * o, y = A0[1] + (A1[1] - A0[1]) * t + ny * o;
+          i ? g.lineTo(x, y) : g.moveTo(x, y);
+        }
+        g.lineWidth = 1.4; g.stroke();
+        disc(g, 95, 191, 8, C.plate, C.ink, 1.6);
+        // trough and falling water
+        if (f > 0.02) {
+          g.strokeStyle = C.water; g.lineWidth = 1 + 5 * f; L(g, 122, 92, 264, 102);
+          g.lineWidth = 1 + 4 * f; g.setLineDash([7, 5]); g.lineDashOffset = -flow;
+          L(g, 268, 108, 268, 144); L(g, 250, 236, 250, 292); g.setLineDash([]); g.lineDashOffset = 0;
+        }
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 112, 97, 270, 108); L(g, 112, 97, 112, 84);
+        // the wheel
+        disc(g, W[0], W[1], R, null, C.ink, 2); disc(g, W[0], W[1], R - 12, null, C.ink, 1);
+        g.lineWidth = 1.3; spokes(g, W[0], W[1], 8, R - 12, 6, th); g.lineWidth = 2; spokes(g, W[0], W[1], R - 12, R, 12, th);
+        disc(g, W[0], W[1], 8, C.plate, C.ink, 1.8);
+        label(g, 'screw', 118, 250); label(g, 'trough', 180, 84);
+      },
+      read(on) { const fall = 60 * d.frac; return [(d.v * 60 / TAU).toFixed(1) + ' rpm', fall.toFixed(0) + ' L/min', (fall * (on ? 0.6 : 1)).toFixed(0) + ' L/min']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 5 · Wilkins's magnet and ramp ---------- */
+  M.wilkins = g => {
+    const pts = [[60, 271.5], [265, 115]];
+    for (let i = 0; i <= 20; i++) { const t = i / 20, u = 1 - t; pts.push([u * u * 268 + 2 * u * t * 250 + t * t * 66, u * u * 131 + 2 * u * t * 292 + t * t * 277]); }
+    const path = mkPath(pts, true), upLen = Math.hypot(205, 156.5);
+    let s = 40, e = 0, laps = 0, held = 0;
+    const pos = () => e > 0 ? [265 + 0.795 * e, 115 - 0.607 * e] : path.at(s);
+    return {
+      step(dt, on) {
+        if (e > 0) { e = on ? Math.min(30, e + 160 * dt) : Math.max(0, e - 220 * dt); held = on && e >= 30 ? held + dt : 0; return; }
+        const v = s < upLen ? 70 + 120 * (s / upLen) : 150, ns = s + v * dt;
+        if (on && s < upLen && ns >= upLen) { s = upLen; e = 0.01; return; }
+        s = ns; if (s >= path.len) { s -= path.len; laps++; }
+      },
+      draw() {
+        ground(g, 30, 392, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2;
+        L(g, 322, 110, 322, 318); L(g, 64, 278, 64, 318);
+        L(g, 64, 278, 262, 126.9); L(g, 279, 113.9, 298, 99.4);
+        g.beginPath(); g.moveTo(270, 141); g.quadraticCurveTo(250, 303, 56, 288); g.lineTo(50, 270); g.stroke();
+        g.globalAlpha = 0.85; g.fillStyle = C.stamp; g.fillRect(298, 72, 24, 38); g.fillStyle = C.water; g.fillRect(322, 72, 24, 38); g.globalAlpha = 1;
+        g.lineWidth = 1.8; g.strokeRect(298, 72, 48, 38);
+        g.fillStyle = C.plate; g.textAlign = 'center'; g.fillText('N', 310, 95.5); g.fillText('S', 334, 95.5); g.textAlign = 'left';
+        const p = pos(); disc(g, p[0], p[1], 8, C.soft, C.ink, 1.5);
+        label(g, 'lodestone', 322, 62, 'center'); label(g, 'hole', 252, 104, 'right'); label(g, 'iron ball', 96, 300);
+      },
+      read() {
+        const p = pos();
+        return [laps, e >= 30 ? 'held by magnet' : e > 0 ? 'at the hole' : s < upLen ? 'climbing' : 'rolling back', Math.max(0, (286 - p[1]) / 8).toFixed(0) + ' cm'];
+      },
+      stalled(on) { return on && held > 0.5; }
+    };
+  };
+
+  /* ---------- 6 · Boyle's self-filling flask ---------- */
+  M.boyle = g => {
+    const tube = mkPath([[160, 236], [160, 285], [310, 285], [310, 58], [215, 58], [215, 74]], false), LEVEL = 372, FULL = tube.len;
+    let fill = FULL, drip = 0, still = 0;
+    return {
+      step(dt, on) {
+        fill = on ? Math.max(LEVEL, fill - 70 * dt) : Math.min(FULL, fill + 70 * dt);
+        if (fill >= FULL) drip += dt * 60;
+        still = on && fill <= LEVEL ? still + dt : 0;
+      },
+      draw() {
+        ground(g, 60, 372, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2; L(g, 200, 292, 200, 318); L(g, 280, 292, 280, 318);
+        g.lineWidth = 13; poly(g, tube.pts); g.stroke();
+        g.strokeStyle = C.plate; g.lineWidth = 9.5; poly(g, tube.pts); g.stroke();
+        g.lineCap = 'butt'; g.strokeStyle = C.water; g.globalAlpha = 0.75; tube.trace(g, 0, fill); g.globalAlpha = 1;
+        if (fill >= FULL) { g.lineWidth = 3; g.setLineDash([6, 5]); g.lineDashOffset = -drip; L(g, 215, 80, 215, 113); g.setLineDash([]); g.lineDashOffset = 0; }
+        g.lineCap = 'round';
+        g.beginPath(); g.moveTo(85, 90); g.quadraticCurveTo(95, 215, 153.5, 236); g.lineTo(166.5, 236); g.quadraticCurveTo(225, 215, 235, 90);
+        g.save(); g.clip(); g.fillStyle = C.plate; g.fillRect(80, 85, 160, 156);
+        g.globalAlpha = 0.6; g.fillStyle = C.water; g.fillRect(80, 112, 160, 130); g.restore(); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 2;
+        g.beginPath(); g.moveTo(85, 90); g.quadraticCurveTo(95, 215, 153.5, 236); g.moveTo(166.5, 236); g.quadraticCurveTo(225, 215, 235, 90); g.stroke();
+        g.strokeStyle = C.soft; g.lineWidth = 1; g.setLineDash([4, 4]); L(g, 240, 112, 336, 112); g.setLineDash([]);
+        label(g, 'wide bowl', 85, 80); label(g, 'thin tube', 322, 180); label(g, 'same level', 338, 116);
+      },
+      read() {
+        const y = fill <= 426 ? 285 - (fill - 199) : 58;
+        return ['17.7 cm', ((236 - y) / 7).toFixed(1) + ' cm', fill >= FULL ? 'pouring' : 'none'];
+      },
+      stalled() { return still > 0.6; }
+    };
+  };
+
+  /* ---------- the mercury bellows ---------- */
+  M.papin = g => {
+    const H = [250, 130];
+    let p = 0.1, cyc = 0, rate = 1, flow = 0, still = 0;
+    const pose = q => q < 0.45 ? [0.08 + 0.62 * q / 0.45, 2.1, q / 0.45] : q < 0.6 ? [0.7, 2.1 - 1.6 * (q - 0.45) / 0.15, 1] :
+      q < 0.85 ? [0.7 - 0.62 * (q - 0.6) / 0.25, 0.5, 1 - (q - 0.6) / 0.25] : [0.08, 0.5 + 1.6 * (q - 0.85) / 0.15, 0];
+    return {
+      step(dt, on) {
+        if (on) { if (p > 0.02) p = Math.max(0.02, p > 0.5 ? (p + dt / 3 >= 1 ? 0.02 : p + dt / 3) : p - dt / 3); rate = 0; still = p <= 0.02 ? still + dt : 0; }
+        else { rate = 1; still = 0; p += dt / 5; if (p >= 1) { p -= 1; cyc++; } }
+        flow += dt * 60;
+      },
+      draw(on) {
+        const [al, be, m] = pose(p);
+        ground(g, 40, 392, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.4; L(g, H[0], H[1], H[0], 318);
+        // cistern of mercury and the pipe up to the hinge
+        g.fillStyle = C.plate; g.fillRect(60, 250, 140, 50); g.globalAlpha = 0.5; g.fillStyle = C.ink; g.fillRect(60, 264, 140, 36); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 60, 244, 60, 300); L(g, 60, 300, 200, 300); L(g, 200, 244, 200, 300); L(g, 80, 300, 80, 318); L(g, 180, 300, 180, 318);
+        const pipe = [[130, 290], [130, 130], [250, 130]];
+        g.lineWidth = 7; poly(g, pipe); g.stroke(); g.strokeStyle = C.plate; g.lineWidth = 3.6; poly(g, pipe); g.stroke();
+        if (!on && p < 0.45) { g.strokeStyle = C.ink; g.globalAlpha = 0.6; poly(g, pipe); g.stroke(); g.globalAlpha = 1; }
+        // return trough
+        g.strokeStyle = C.ink; g.lineWidth = 2; L(g, 380, 212, 204, 252); L(g, 380, 212, 380, 200);
+        if (!on && p > 0.6 && p < 0.88) { g.strokeStyle = C.ink; g.globalAlpha = 0.6; g.lineWidth = 3; g.setLineDash([6, 6]); g.lineDashOffset = flow; L(g, 372, 210, 206, 248); L(g, 346, 186, 346, 214); g.setLineDash([]); g.globalAlpha = 1; }
+        // the bellows
+        const a1 = be - al / 2, a2 = be + al / 2, P1 = [H[0] + 112 * Math.cos(a1), H[1] + 112 * Math.sin(a1)], P2 = [H[0] + 112 * Math.cos(a2), H[1] + 112 * Math.sin(a2)];
+        const body = [H]; for (let k = 0; k <= 6; k++) { const t = k / 6, r = k % 2 ? 100 : 112, a = a1 + (a2 - a1) * t; body.push([H[0] + r * Math.cos(a), H[1] + r * Math.sin(a)]); }
+        poly(g, body, true); g.fillStyle = C.plate; g.fill();
+        if (m > 0.02) { g.save(); g.clip(); g.globalAlpha = 0.5; g.fillStyle = C.ink; g.beginPath(); g.moveTo(H[0], H[1]); g.arc(H[0], H[1], 112, a1, a1 + (a2 - a1) * 1, false); g.closePath(); g.globalAlpha = 0.5 * m; g.fill(); g.restore(); g.globalAlpha = 1; }
+        poly(g, body, true); g.strokeStyle = C.ink; g.lineWidth = 1.3; g.stroke();
+        g.lineWidth = 3.4; L(g, H[0], H[1], P1[0], P1[1]); L(g, H[0], H[1], P2[0], P2[1]);
+        // counterweight
+        const cw = [H[0] - 46 * Math.cos(be), H[1] - 46 * Math.sin(be)]; g.lineWidth = 2.2; L(g, H[0], H[1], cw[0], cw[1]); disc(g, cw[0], cw[1], 9, C.brass, C.ink, 1.4);
+        disc(g, H[0], H[1], 5, C.plate, C.ink, 1.8);
+        if (on) { g.strokeStyle = C.stamp; g.lineWidth = 1.8; const mid = (r, a, o) => [H[0] + r * Math.cos(a) - o * Math.sin(a), H[1] + r * Math.sin(a) + o * Math.cos(a)];
+          for (const r of [50, 90]) { let s = mid(r, a1, -26), e = mid(r, a1, -5); arrow(g, s[0], s[1], e[0], e[1], 8); s = mid(r, a2, 26); e = mid(r, a2, 5); arrow(g, s[0], s[1], e[0], e[1], 8); } }
+        label(g, 'mercury', 130, 314, 'center'); label(g, on ? 'the air outside holds it shut' : 'bellows', 268, 100);
+      },
+      read(on) { return [cyc, '25 inches', on ? '27 inches' : 'ignored']; },
+      stalled() { return still > 0.6; }
+    };
+  };
+
+  /* ---------- Bessler's wheel ---------- */
+  M.bessler = g => {
+    const d = drive(0.7, 2.8), cx = 170, cy = 172, R = 96;
+    let th = 0, h = 0, lifted = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; h += d.v * dt * 26; if (h > 170) { h = 0; lifted++; } },
+      draw() {
+        ground(g, 30, 396, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.4; L(g, cx, cy, cx - 70, 318); L(g, cx, cy, cx + 70, 318);
+        L(g, 366, 318, 366, 50); L(g, 366, 50, 334, 50);
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; L(g, cx + 6, cy - 9, 330, 42); L(g, 342, 50, 342, 268 - h);
+        disc(g, 334, 50, 8, C.plate, C.ink, 1.6);
+        g.fillStyle = C.brass; g.fillRect(326, 268 - h, 32, 22); g.strokeStyle = C.ink; g.lineWidth = 1.3; g.strokeRect(326, 268 - h, 32, 22);
+        L(g, 326, 279 - h, 358, 279 - h); L(g, 342, 268 - h, 342, 279 - h); L(g, 334, 279 - h, 334, 290 - h); L(g, 350, 279 - h, 350, 290 - h);
+        disc(g, cx, cy, R, C.plate, C.ink, 2.2); g.globalAlpha = 0.08; disc(g, cx, cy, R, C.ink); g.globalAlpha = 1;
+        disc(g, cx, cy, R - 8, null, C.ink, 1);
+        g.strokeStyle = C.soft; g.lineWidth = 1; spokes(g, cx, cy, 14, R - 8, 8, th);
+        disc(g, cx, cy, 12, C.plate, C.ink, 2); disc(g, cx, cy, 2.5, C.ink);
+        g.fillStyle = C.soft; g.font = '700 46px ' + MONO; g.textAlign = 'center'; g.fillText('?', cx, cy - 30);
+        g.font = '500 12.5px ' + MONO; g.textAlign = 'left';
+        label(g, 'cloth-covered drum', 24, 52); label(g, 'box of bricks', 318, 308, 'center');
+      },
+      read() { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', lifted, 'never shown']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- Bernoulli's two liquids ---------- */
+  M.bernoulli = g => {
+    const tube = mkPath([[208, 278], [208, 58], [252, 58], [252, 82]], false), LEVEL = 86, FULL = tube.len, dots = [];
+    for (let i = 0; i < 46; i++) dots.push([98 + Math.random() * 194, 160 + Math.random() * 124, i % 2]);
+    let fill = FULL, drip = 0, still = 0;
+    return {
+      step(dt, on) {
+        fill = on ? Math.max(LEVEL, fill - 60 * dt) : Math.min(FULL, fill + 60 * dt);
+        if (fill >= FULL) drip += dt * 60; still = on && fill <= LEVEL ? still + dt : 0;
+      },
+      draw(on) {
+        ground(g, 50, 370, 318);
+        g.fillStyle = C.plate; g.fillRect(90, 120, 210, 172); g.globalAlpha = 0.35; g.fillStyle = C.water; g.fillRect(90, 152, 210, 140); g.globalAlpha = 1;
+        for (const q of dots) if (!(q[0] > 196 && q[0] < 220)) disc(g, q[0], q[1], q[2] ? 2 : 2.6, q[2] ? C.brass : C.ink);
+        g.strokeStyle = C.ink; g.lineWidth = 2; L(g, 90, 110, 90, 292); L(g, 90, 292, 300, 292); L(g, 300, 110, 300, 292); L(g, 120, 292, 120, 318); L(g, 270, 292, 270, 318);
+        g.lineWidth = 17; poly(g, tube.pts); g.stroke(); g.strokeStyle = C.plate; g.lineWidth = 13; poly(g, tube.pts); g.stroke();
+        g.lineCap = 'butt'; g.strokeStyle = C.brass; g.globalAlpha = 0.6; tube.trace(g, 0, fill); g.globalAlpha = 1;
+        if (fill >= FULL) { g.lineWidth = 3; g.setLineDash([6, 5]); g.lineDashOffset = -drip; L(g, 252, 90, 252, 152); g.setLineDash([]); g.lineDashOffset = 0; }
+        g.strokeStyle = C.stamp; g.lineWidth = 2.4; g.setLineDash([3, 3]); L(g, 199, 286, 217, 286); g.setLineDash([]); g.lineCap = 'round';
+        if (on) { g.strokeStyle = C.stamp; g.lineWidth = 1.6; arrow(g, 208, 268, 176, 268, 7); arrow(g, 208, 268, 240, 268, 7); }
+        label(g, 'mixture of a heavy', 310, 200); label(g, 'and a light liquid', 310, 216); label(g, 'filter', 180, 310, 'center'); label(g, 'light liquid only', 196, 74, 'right');
+      },
+      read() { const y = fill <= 220 ? 278 - fill : 58; return ['18 cm', Math.max(0, (292 - y) / 7.8).toFixed(0) + ' cm', fill >= FULL ? 'pouring' : 'none']; },
+      stalled() { return still > 0.6; }
+    };
+  };
+
+  /* ---------- 7 · Congreve's sponge band ---------- */
+  M.congreve = g => {
+    const rol = [[150, 74], [150, 236], [318, 236]], path = mkPath(beltPts(rol, 19), true), d = drive(40, 2.2);
+    let s = 0;
+    return {
+      step(dt, on) { d.step(dt, on); s += d.v * dt; },
+      draw() {
+        g.globalAlpha = 0.4; g.fillStyle = C.water; g.fillRect(50, 222, 340, 84); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 50, 204, 50, 306); L(g, 50, 306, 390, 306); L(g, 390, 306, 390, 204);
+        g.lineWidth = 12; poly(g, path.pts); g.stroke();
+        g.strokeStyle = C.plate; g.lineWidth = 9; poly(g, path.pts); g.stroke();
+        g.strokeStyle = C.water; g.globalAlpha = 0.8; g.lineCap = 'butt';
+        for (let q = 0; q < path.len; q += 4) { const a = path.at(q), b = path.at(q + 4.6); if (a[0] < 141 || a[1] > 224) L(g, a[0], a[1], b[0], b[1]); }
+        g.globalAlpha = 1; g.lineCap = 'round';
+        for (let q = s % 16; q < path.len; q += 16) { const p = path.at(q); disc(g, p[0], p[1], 1.2, C.ink); }
+        for (let q = s % 43; q < path.len; q += 43) {
+          const p = path.at(q), dx = p[0] - 206, dy = p[1] - 182, dd = Math.hypot(dx, dy), x = p[0] + dx / dd * 11, y = p[1] + dy / dd * 11;
+          g.fillStyle = C.brass; g.fillRect(x - 4.5, y - 4.5, 9, 9); g.strokeStyle = C.ink; g.lineWidth = 1.2; g.strokeRect(x - 4.5, y - 4.5, 9, 9);
+        }
+        for (const c of rol) { disc(g, c[0], c[1], 13, C.plate, C.ink, 1.8); g.lineWidth = 1.2; spokes(g, c[0], c[1], 0, 13, 2, -s / 19); }
+        label(g, 'wet,', 62, 140); label(g, 'heavy', 62, 156); label(g, 'squeezed dry', 262, 112);
+      },
+      read(on) { return [(d.v / 10).toFixed(1) + ' cm/s', '12 N', on ? '12 N' : '0 N']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- capillary fountain ---------- */
+  M.capfount = g => {
+    const tube = mkPath([[130, 292], [130, 84], [180, 84], [180, 102]], false), d = drive(1.6, 2);
+    let th = 0, drip = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th -= d.v * dt; drip += d.v * dt * 38; },
+      draw(on) {
+        ground(g, 40, 380, 318);
+        g.globalAlpha = 0.4; g.fillStyle = C.water; g.fillRect(60, 272, 300, 34); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 60, 256, 60, 306); L(g, 60, 306, 360, 306); L(g, 360, 256, 360, 306);
+        L(g, 90, 306, 90, 318); L(g, 330, 306, 330, 318);
+        g.lineWidth = 2; L(g, 192, 196, 168, 306); L(g, 192, 196, 216, 306);
+        g.lineWidth = 8; poly(g, tube.pts); g.stroke(); g.strokeStyle = C.plate; g.lineWidth = 4.4; poly(g, tube.pts); g.stroke();
+        g.strokeStyle = C.water; g.globalAlpha = 0.85; poly(g, tube.pts); g.stroke(); g.globalAlpha = 1;
+        if (on && d.v === 0) disc(g, 180, 107, 4.4, C.water, C.ink, 1);
+        else for (let k = 0; k < 3; k++) {
+          g.globalAlpha = d.frac; disc(g, 180, 108 + ((drip + k * 20) % 58), 2.6, C.water); disc(g, 176, 232 + ((drip + k * 13) % 38), 2.4, C.water); g.globalAlpha = 1;
+        }
+        disc(g, 192, 196, 30, null, C.ink, 1.8); g.lineWidth = 2; spokes(g, 192, 196, 6, 30, 8, th); disc(g, 192, 196, 6, C.plate, C.ink, 1.6);
+        label(g, 'thin tube', 118, 150, 'right'); if (on) label(g, 'the drop will not let go', 192, 110);
+      },
+      read(on) { return ['12 cm', Math.round(d.frac * 40) + ' a minute', (d.v * 60 / TAU).toFixed(1) + ' rpm']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- siphon with a fat leg ---------- */
+  M.siphon = g => {
+    const loop = mkPath([[140, 286], [140, 70], [280, 70], [280, 286], [210, 298]], true), d = drive(46, 2.2);
+    let s = 0, th = 0;
+    return {
+      step(dt, on) { d.step(dt, on); s += d.v * dt; th += d.v * dt / 14; },
+      draw() {
+        ground(g, 40, 380, 318);
+        g.globalAlpha = 0.4; g.fillStyle = C.water; g.fillRect(60, 256, 300, 50); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 60, 240, 60, 306); L(g, 60, 306, 360, 306); L(g, 360, 240, 360, 306);
+        L(g, 90, 306, 90, 318); L(g, 330, 306, 330, 318);
+        const wide = [[263, 290], [263, 114], [275, 90], [285, 90], [297, 114], [297, 290]];
+        poly(g, wide, true); g.fillStyle = C.plate; g.fill(); g.globalAlpha = 0.55; g.fillStyle = C.water; g.fill(); g.globalAlpha = 1;
+        poly(g, wide); g.strokeStyle = C.ink; g.lineWidth = 1.8; g.stroke();
+        const thin = [[140, 290], [140, 70], [280, 70], [280, 92]];
+        g.lineWidth = 10; poly(g, thin); g.stroke(); g.strokeStyle = C.plate; g.lineWidth = 6; poly(g, thin); g.stroke();
+        g.strokeStyle = C.water; g.globalAlpha = 0.75; poly(g, thin); g.stroke(); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 2; spokes(g, 280, 200, 3, 13, 4, th); disc(g, 280, 200, 3, C.ink);
+        for (let q = s % 26; q < loop.len; q += 26) { const p = loop.at(q); if (p[1] < 252) disc(g, p[0], p[1], 1.7, C.ink); }
+        label(g, 'narrow leg', 128, 170, 'right'); label(g, 'wide leg', 306, 170);
+      },
+      read() { return ['0.1 kg', '2.0 kg', (d.frac * 3).toFixed(1) + ' L/min']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- lopsided chain ---------- */
+  M.chain = g => {
+    const pts = [[172, 70], [172, 270]];
+    for (let k = 1; k <= 8; k++) { const t = Math.PI - k * Math.PI / 8; pts.push([200 + 28 * Math.cos(t), 270 + 28 * Math.sin(t)]); }
+    pts.push([286, 232], [228, 194], [286, 156], [228, 118], [228, 70]);
+    for (let k = 1; k < 8; k++) { const t = -k * Math.PI / 8; pts.push([200 + 28 * Math.cos(t), 70 + 28 * Math.sin(t)]); }
+    const path = mkPath(pts, true), d = drive(40, 2.2), n = 28;
+    let s = 0, zig = 0, str = 0;
+    return {
+      step(dt, on) { d.step(dt, on); s -= d.v * dt; },
+      draw() {
+        ground(g, 80, 340, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.4; L(g, 200, 70, 200, 318);
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; for (const r of [[276, 232], [238, 194], [276, 156], [238, 118]]) L(g, 200, r[1], r[0], r[1]);
+        for (const cy of [70, 270]) { disc(g, 200, cy, 22, C.plate, C.ink, 1.8); g.lineWidth = 1.2; spokes(g, 200, cy, 5, 22, 4, s / 28); disc(g, 200, cy, 5, C.plate, C.ink, 1.5); }
+        for (const r of [[276, 232], [238, 194], [276, 156], [238, 118]]) disc(g, r[0], r[1], 7, C.plate, C.ink, 1.5);
+        poly(g, path.pts); g.strokeStyle = C.soft; g.lineWidth = 1.2; g.stroke();
+        zig = 0; str = 0;
+        for (let k = 0; k < n; k++) {
+          const p = path.at(s + k * path.len / n); disc(g, p[0], p[1], 5, C.brass, C.ink, 1.1);
+          if (p[1] > 70 && p[1] < 270) { if (p[0] > 214) zig++; else if (p[0] < 186) str++; }
+        }
+        label(g, 'straight', 160, 174, 'right'); label(g, 'zigzag', 300, 198);
+      },
+      read() { return [zig, str, (d.v / 10).toFixed(1) + ' cm/s']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- ball-lifting screw ---------- */
+  M.ballscrew = g => {
+    const d = drive(50, 2.6), W = [285, 185], R = 70, A0 = [66, 296], A1 = [128, 82], nx = 0.96, ny = 0.277, hw = 13;
+    const pts = [[66, 292], [128, 82], [258, 112]];
+    for (let k = 1; k <= 12; k++) { const t = (-110 - k * 140 / 12) * Math.PI / 180; pts.push([W[0] + R * Math.cos(t), W[1] + R * Math.sin(t)]); }
+    pts.push([72, 294]);
+    const path = mkPath(pts, true), n = 9;
+    let s = 0, th = 0, ph = 0;
+    return {
+      step(dt, on) { d.step(dt, on); s += d.v * dt; th -= d.v / R * dt; ph += d.v * dt * 0.07; },
+      draw() {
+        ground(g, 30, 392, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, W[0], W[1], 258, 318); L(g, W[0], W[1], 312, 318);
+        g.strokeStyle = C.soft; g.lineWidth = 1.1; L(g, W[0], W[1] - 8, 97, 180); L(g, W[0], W[1] + 8, 97, 196);
+        poly(g, [[A0[0] - nx * hw, A0[1] - ny * hw], [A1[0] - nx * hw, A1[1] - ny * hw], [A1[0] + nx * hw, A1[1] + ny * hw], [A0[0] + nx * hw, A0[1] + ny * hw]], true);
+        g.fillStyle = C.plate; g.fill(); g.strokeStyle = C.ink; g.lineWidth = 1.6; g.stroke();
+        g.beginPath();
+        for (let i = 0; i <= 90; i++) {
+          const t = i / 90, o = hw * Math.sin(TAU * t * 9 - ph * TAU), x = A0[0] + (A1[0] - A0[0]) * t + nx * o, y = A0[1] + (A1[1] - A0[1]) * t + ny * o;
+          i ? g.lineTo(x, y) : g.moveTo(x, y);
+        }
+        g.lineWidth = 1.3; g.stroke();
+        disc(g, 97, 188, 8, C.plate, C.ink, 1.6);
+        g.lineWidth = 1.8; L(g, 132, 92, 254, 121); L(g, 268, 262, 70, 304);
+        disc(g, W[0], W[1], R - 8, null, C.ink, 2); g.lineWidth = 1.3; spokes(g, W[0], W[1], 8, R - 8, 8, th);
+        g.lineWidth = 2.4; spokes(g, W[0], W[1], R - 8, R + 5, 8, th + TAU / 16);
+        disc(g, W[0], W[1], 8, C.plate, C.ink, 1.8);
+        for (let k = 0; k < n; k++) { const p = path.at(s + k * path.len / n); disc(g, p[0], p[1], 6.5, C.brass, C.ink, 1.3); }
+        label(g, 'screw', 122, 250);
+      },
+      read(on) { return [(d.v / R * 60 / TAU).toFixed(1) + ' rpm', '2.0 J', on ? 'over 2.0 J' : 'ignored']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 8 · float belt ---------- */
+  M.floats = g => {
+    const path = mkPath(beltPts([[205, 58], [205, 266]], 38), true), d = drive(45, 2), n = 12;
+    let s = 0;
+    return {
+      step(dt, on) { d.step(dt, on); s += d.v * dt; },
+      draw() {
+        ground(g, 60, 372, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, 205, 58, 205, 318); L(g, 296, 240, 296, 318);
+        g.globalAlpha = 0.4; g.fillStyle = C.water; g.fillRect(222, 106, 74, 134); g.globalAlpha = 1;
+        g.lineWidth = 1.8; L(g, 222, 96, 222, 240); L(g, 222, 240, 296, 240); L(g, 296, 96, 296, 240);
+        g.fillStyle = C.ink; g.fillRect(231, 236, 24, 8);
+        for (const cy of [58, 266]) { disc(g, 205, cy, 30, C.plate, C.ink, 1.8); g.lineWidth = 1.2; spokes(g, 205, cy, 6, 30, 4, -s / 38); disc(g, 205, cy, 6, C.plate, C.ink, 1.6); }
+        poly(g, path.pts); g.strokeStyle = C.soft; g.lineWidth = 1.2; g.stroke();
+        for (let k = 0; k < n; k++) { const p = path.at(s + k * path.len / n); disc(g, p[0], p[1], 8.5, C.plate, C.ink, 1.5); }
+        label(g, 'air', 148, 166, 'right'); label(g, 'water', 306, 166); label(g, 'seal', 262, 258);
+      },
+      read(on) { return [(d.v / 10).toFixed(1) + ' cm/s', '14.7 J', on ? '14.7 J' : '0.0 J']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- wheel of opening floats ---------- */
+  M.bfloat = g => {
+    const d = drive(0.8, 2.5), cx = 210, cy = 182, R = 76, N = 8;
+    let th = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; },
+      draw() {
+        ground(g, 40, 380, 318);
+        g.globalAlpha = 0.4; g.fillStyle = C.water; g.fillRect(72, 64, 276, 236); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 72, 48, 72, 300); L(g, 72, 300, 348, 300); L(g, 348, 48, 348, 300);
+        L(g, 100, 300, 100, 318); L(g, 320, 300, 320, 318);
+        g.lineWidth = 2.2; L(g, cx, cy, cx, 300);
+        disc(g, cx, cy, R, null, C.ink, 1.6); g.lineWidth = 1.2; spokes(g, cx, cy, 8, R, N, th);
+        for (let k = 0; k < N; k++) {
+          const a = th + k * TAU / N, open = clamp(0.5 - 0.9 * Math.cos(a), 0, 1), r = 8 + 9 * open, x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+          disc(g, x, y, r, C.plate, C.ink, 1.5); disc(g, x, y, r * 0.55, null, C.soft, 1);
+          disc(g, x + (r - 3) * Math.cos(a), y + (r - 3) * Math.sin(a), 2.6, C.brass, C.ink, 0.8);
+        }
+        disc(g, cx, cy, 8, C.plate, C.ink, 2);
+        label(g, 'open', 84, 182); label(g, 'shut', 336, 182, 'right');
+      },
+      read(on) { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', '6 J', on ? '6 J' : 'ignored']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 9 · drum through a tank wall ---------- */
+  M.drum = g => {
+    const d = drive(0.9, 2.5), cx = 200, cy = 185, R = 85;
+    let th = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th -= d.v * dt; },
+      draw(on) {
+        ground(g, 40, 400, 318);
+        g.globalAlpha = 0.4; g.fillStyle = C.water; g.fillRect(200, 72, 188, 228); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, cx, cy, 140, 318); L(g, cx, cy, 186, 318);
+        g.lineWidth = 1.8; L(g, 200, 50, 200, 104); L(g, 200, 266, 200, 300); L(g, 200, 300, 388, 300); L(g, 388, 50, 388, 300);
+        L(g, 230, 300, 230, 318); L(g, 370, 300, 370, 318);
+        disc(g, cx, cy, R, C.plate, C.ink, 2); disc(g, cx, cy, R - 10, null, C.ink, 1);
+        g.lineWidth = 1.3; spokes(g, cx, cy, 12, R - 10, 6, th);
+        for (let k = 0; k < 12; k++) { const a = th + k * TAU / 12; disc(g, cx + (R - 5) * Math.cos(a), cy + (R - 5) * Math.sin(a), 2, C.ink); }
+        disc(g, cx, cy, 12, C.plate, C.ink, 2); disc(g, cx, cy, 2.5, C.ink);
+        g.fillStyle = C.ink; g.fillRect(194, 96, 12, 8); g.fillRect(194, 266, 12, 8);
+        if (on) {
+          g.strokeStyle = C.stamp;
+          for (const deg of [-60, -30, 0, 30, 60]) {
+            const a = deg * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), len = 12 + (cy + R * sa - 72) * 0.16;
+            g.lineWidth = 1.8; arrow(g, cx + (R + 6 + len) * ca, cy + (R + 6 + len) * sa, cx + (R + 4) * ca, cy + (R + 4) * sa, 8);
+            g.lineWidth = 1; g.setLineDash([3, 4]); L(g, cx + R * ca, cy + R * sa, cx + 14 * ca, cy + 14 * sa); g.setLineDash([]);
+          }
+        }
+        label(g, 'air', 70, 110); label(g, 'water', 378, 290, 'right');
+      },
+      read(on) { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', 'strong', on ? 'none' : 'claimed']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- shielded-magnet wheel ---------- */
+  M.shield = g => {
+    const cx = 180, cy = 170, R = 88, N = 8, RUN = 0.9;
+    let th = 0.2, om = RUN, still = 0;
+    return {
+      step(dt, on) {
+        if (on) { om += (-1.4 * Math.sin(N * th) - 0.5 * om) * dt; still = Math.abs(om) < 0.03 ? still + dt : 0; }
+        else { om += (RUN - om) * Math.min(1, 1.6 * dt); still = 0; }
+        th += om * dt;
+      },
+      draw() {
+        ground(g, 60, 372, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, cx, cy, cx - 56, 318); L(g, cx, cy, cx + 56, 318); L(g, 314, 184, 314, 318);
+        disc(g, cx, cy, R - 24, null, C.ink, 1.6); g.lineWidth = 1.3; spokes(g, cx, cy, 10, R - 24, N, th);
+        g.lineCap = 'butt';
+        for (let k = 0; k < N; k++) {
+          const a = th + k * TAU / N, ca = Math.cos(a), sa = Math.sin(a), P = r => [cx + r * ca, cy + r * sa];
+          const i0 = P(R - 23), m = P(R - 8), o = P(R + 7);
+          g.strokeStyle = C.ink; g.lineWidth = 13; L(g, i0[0], i0[1], o[0], o[1]);
+          g.lineWidth = 10; g.strokeStyle = C.water; L(g, P(R - 21.5)[0], P(R - 21.5)[1], m[0], m[1]); g.strokeStyle = C.stamp; L(g, m[0], m[1], P(R + 5.5)[0], P(R + 5.5)[1]);
+        }
+        g.strokeStyle = C.ink; g.lineWidth = 9; g.beginPath(); g.arc(cx, cy, R + 19, 0.2, 1.17); g.stroke();
+        g.strokeStyle = C.brass; g.lineWidth = 6; g.beginPath(); g.arc(cx, cy, R + 19, 0.215, 1.155); g.stroke();
+        g.lineCap = 'round';
+        g.fillStyle = C.water; g.fillRect(288, 156, 27, 28); g.fillStyle = C.stamp; g.fillRect(315, 156, 27, 28);
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(288, 156, 54, 28);
+        disc(g, cx, cy, 10, C.plate, C.ink, 2);
+        label(g, 'fixed magnet', 316, 146, 'center'); label(g, 'shield', 296, 262);
+      },
+      read(on) { return [(Math.abs(om) < 0.005 ? 0 : om * 60 / TAU).toFixed(1) + ' rpm', '5 J', on ? '5 J' : 'blocked']; },
+      stalled(on) { return on && still > 1; }
+    };
+  };
+
+  /* ---------- gears that feed themselves ---------- */
+  M.gears = g => {
+    const d = drive(1.2, 0.25), A = [112, 160], B = [224, 160];
+    let th = 0, belt = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; belt += d.v * dt * 16; },
+      draw() {
+        ground(g, 40, 380, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.4; L(g, A[0], A[1], A[0], 318); L(g, B[0], B[1], B[0], 318);
+        g.lineWidth = 1.6; gear(g, B[0], B[1], 84, 42, -th / 3 - Math.PI / 42, C.plate); gear(g, A[0], A[1], 28, 14, th, C.plate);
+        disc(g, B[0], B[1], 66, null, C.ink, 1); g.lineWidth = 1.4; spokes(g, B[0], B[1], 16, 66, 6, -th / 3);
+        g.strokeStyle = C.soft; g.lineWidth = 1.8; g.setLineDash([7, 5]); g.lineDashOffset = -belt;
+        L(g, A[0], A[1] - 16, B[0], B[1] + 16); L(g, A[0], A[1] + 16, B[0], B[1] - 16); g.setLineDash([]); g.lineDashOffset = 0;
+        disc(g, A[0], A[1], 16, C.plate, C.ink, 1.8); disc(g, B[0], B[1], 16, C.plate, C.ink, 1.8);
+        disc(g, A[0] + 10 * Math.cos(th), A[1] + 10 * Math.sin(th), 2.4, C.ink); disc(g, B[0] + 10 * Math.cos(-th / 3), B[1] + 10 * Math.sin(-th / 3), 2.4, C.ink);
+        label(g, 'small gear', 36, 116); label(g, 'large gear', 300, 80); label(g, 'crossed belt', 168, 282, 'center');
+      },
+      read(on) { return [(d.v * 60 / TAU).toFixed(0) + ' rpm', (d.v * 20 / TAU).toFixed(0) + ' rpm', on ? 'locked' : 'x3 claimed']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Machines: more of the second kind. Each M.name = g => ({ step, draw, read, stalled }).
+
+  /* ---------- 10 · motor and dynamo ---------- */
+  M.motor = g => {
+    const d = drive(1, 2.2), wire = mkPath([[305, 170], [305, 80], [115, 80], [115, 170]], false);
+    let th = 0, flow = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += 6 * d.v * dt; flow += 70 * d.v * dt; },
+      draw() {
+        const f = d.frac;
+        ground(g, 40, 380, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, 40, 292, 380, 292); L(g, 70, 292, 70, 318); L(g, 350, 292, 350, 318);
+        g.lineWidth = 1.4; poly(g, wire.pts); g.stroke();
+        g.globalAlpha = 0.25 + 0.75 * f;
+        for (let q = flow % 24; q < wire.len; q += 24) { const p = wire.at(q); disc(g, p[0], p[1], 2.6, C.brass, C.ink, 0.8); }
+        g.globalAlpha = 1;
+        disc(g, 210, 80, 14, C.plate, C.ink, 1.6);
+        g.globalAlpha = 0.9 * f; disc(g, 210, 80, 12, C.brass);
+        g.strokeStyle = C.brass; g.lineWidth = 1.8; g.globalAlpha = f; spokes(g, 210, 80, 19, 26, 8, 0); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.2; poly(g, [[203, 84], [207, 76], [210, 84], [213, 76], [217, 84]]); g.stroke();
+        for (const cx of [115, 305]) {
+          poly(g, [[cx - 36, 292], [cx - 22, 262], [cx + 22, 262], [cx + 36, 292]], true); g.fillStyle = C.plate; g.fill(); g.strokeStyle = C.ink; g.lineWidth = 2; g.stroke();
+          disc(g, cx, 222, 52, C.plate, C.ink, 2); disc(g, cx, 222, 41, null, C.ink, 1); disc(g, cx, 222, 31, null, C.ink, 1.4);
+          g.lineWidth = 3; spokes(g, cx, 222, 14, 31, 6, th);
+          disc(g, cx, 222, 14, C.plate, C.ink, 1.8); disc(g, cx + 8 * Math.cos(th), 222 + 8 * Math.sin(th), 2.2, C.ink);
+        }
+        g.strokeStyle = C.soft; g.lineWidth = 1.3; L(g, 115, 208, 305, 208); L(g, 115, 236, 305, 236);
+        label(g, 'motor', 115, 310, 'center'); label(g, 'dynamo', 305, 310, 'center'); label(g, 'lamp', 210, 44, 'center');
+      },
+      read(on) { const P = 100 * d.frac; return [P.toFixed(0) + ' W', (P * (on ? 0.81 : 1.4)).toFixed(0) + ' W', (40 * d.frac).toFixed(0) + ' W']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- water as fuel ---------- */
+  M.waterfuel = g => {
+    const d = drive(1, 2.4), gas = mkPath([[95, 172], [95, 80], [250, 80], [250, 112]], false), wat = mkPath([[250, 190], [250, 308], [95, 308], [95, 290]], false);
+    let th = 0, flow = 0, tb = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += 5 * d.v * dt; flow += 50 * d.v * dt; tb += d.v * dt; },
+      draw() {
+        const f = d.frac;
+        for (const p of [gas, wat]) { g.strokeStyle = C.ink; g.lineWidth = 5.5; poly(g, p.pts); g.stroke(); g.strokeStyle = C.plate; g.lineWidth = 2.6; poly(g, p.pts); g.stroke(); }
+        for (let q = flow % 18; q < gas.len; q += 18) { const p = gas.at(q); disc(g, p[0], p[1], 1.6, C.ink); }
+        for (let q = flow % 22; q < wat.len; q += 22) { const p = wat.at(q); disc(g, p[0], p[1], 2.3, C.water); }
+        g.strokeStyle = C.ink; g.lineWidth = 1.4; L(g, 215, 150, 75, 150); L(g, 75, 150, 75, 172); L(g, 115, 150, 115, 172);
+        g.globalAlpha = 0.25 + 0.75 * f; for (let q = flow % 22; q < 140; q += 22) disc(g, 215 - q, 150, 2.5, C.brass, C.ink, 0.8); g.globalAlpha = 1;
+        g.fillStyle = C.plate; g.fillRect(40, 172, 110, 118); g.globalAlpha = 0.45; g.fillStyle = C.water; g.fillRect(40, 192, 110, 98); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(40, 172, 110, 118); g.lineWidth = 3.2; L(g, 75, 172, 75, 268); L(g, 115, 172, 115, 268);
+        if (f > 0.03) for (let k = 0; k < 6; k++) { const y = 264 - ((tb * 46 + k * 17) % 70); disc(g, (k % 2 ? 67 : 83) , y, 2.2, null, C.soft, 1); disc(g, (k % 2 ? 107 : 123), y + 6, 2.2, null, C.soft, 1); }
+        g.fillStyle = C.plate; g.fillRect(215, 112, 130, 78); g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(215, 112, 130, 78);
+        g.globalAlpha = f; poly(g, [[236, 174], [245, 150 - 5 * Math.sin(tb * 22)], [254, 174]], true); g.fillStyle = C.brass; g.fill(); g.globalAlpha = 1;
+        disc(g, 308, 151, 27, null, C.ink, 2); g.lineWidth = 1.4; spokes(g, 308, 151, 5, 27, 4, th); disc(g, 308, 151, 5, C.plate, C.ink, 1.6);
+        g.lineWidth = 1.4; L(g, 345, 130, 366, 130); disc(g, 378, 130, 11, C.plate, C.ink, 1.6); g.globalAlpha = 0.9 * f; disc(g, 378, 130, 9, C.brass); g.globalAlpha = 1;
+        label(g, 'hydrogen', 172, 70, 'center'); label(g, 'water back', 172, 328, 'center'); label(g, 'engine, dynamo', 262, 104); label(g, 'cell', 48, 284);
+      },
+      read(on) { const P = 100 * d.frac; return [P.toFixed(0) + ' W', (P * (on ? 0.25 : 1.4)).toFixed(0) + ' W', (40 * d.frac).toFixed(0) + ' W']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 11 · magnet on a stick ---------- */
+  M.cart = g => {
+    const d = drive(1, 3);
+    let x = 0, th = 0;
+    return {
+      step(dt, on) { d.step(dt, on); x += 80 * d.v * dt; th += 80 * d.v * dt / 15; },
+      draw(on) {
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 20, 270, 400, 270);
+        g.lineWidth = 1; for (let k = 0; k < 11; k++) { const gx = 24 + (((k * 36 - x) % 396) + 396) % 396; L(g, gx, 270, gx - 6, 277); }
+        g.strokeStyle = C.soft; g.lineWidth = 1.4;
+        for (let k = 0; k < 3; k++) { const px = (((k * 150 - x * 0.9) % 450) + 450) % 450 - 15; L(g, px, 270, px, 240); disc(g, px, 238, 3, C.plate, C.soft, 1.4); }
+        g.globalAlpha = d.frac; L(g, 52, 214, 96, 214); L(g, 66, 226, 100, 226); L(g, 58, 238, 92, 238); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 3.2; poly(g, [[180, 205], [180, 150], [318, 150], [318, 196]]); g.stroke();
+        g.fillStyle = C.plate; g.fillRect(110, 205, 140, 40); g.lineWidth = 2; g.strokeRect(110, 205, 140, 40);
+        g.fillStyle = C.ink; g.fillRect(250, 195, 8, 50);
+        for (const wx of [140, 220]) { disc(g, wx, 255, 15, C.plate, C.ink, 2); g.lineWidth = 1.3; spokes(g, wx, 255, 3, 15, 4, th); disc(g, wx, 255, 3, C.ink); }
+        g.fillStyle = C.ink; g.fillRect(322, 196, 9, 44);
+        g.globalAlpha = 0.85; g.fillStyle = C.stamp; g.fillRect(290, 196, 32, 12); g.fillStyle = C.water; g.fillRect(290, 228, 32, 12); g.globalAlpha = 1;
+        g.lineWidth = 1.4; g.strokeStyle = C.ink; g.strokeRect(290, 196, 32, 12); g.strokeRect(290, 228, 32, 12);
+        g.strokeStyle = C.soft; g.lineWidth = 1; g.setLineDash([2, 4]); L(g, 260, 202, 288, 202); L(g, 260, 218, 300, 218); L(g, 260, 234, 288, 234); g.setLineDash([]);
+        if (on) {
+          g.strokeStyle = C.stamp; g.lineWidth = 2.2; arrow(g, 258, 184, 292, 184, 9); arrow(g, 324, 252, 290, 252, 9);
+          g.fillStyle = C.stamp; g.textAlign = 'right'; g.fillText('30 N forward', 250, 188); g.textAlign = 'left'; g.fillText('30 N back', 330, 256);
+        }
+        label(g, 'iron cart', 180, 230, 'center'); label(g, 'magnet', 340, 222);
+      },
+      read(on) { return [(18 * d.frac).toFixed(1) + ' km/h', '30 N', on ? '30 N' : 'ignored']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 12 · Maxwell's demon ---------- */
+  M.demon = g => {
+    const X0 = 30, X1 = 390, Y0 = 56, Y1 = 262, WX = 210, D0 = 119, D1 = 199, P = [];
+    for (let i = 0; i < 40; i++) {
+      const fast = i % 2 === 0, sp = fast ? 125 + Math.random() * 45 : 55 + Math.random() * 35, a = Math.random() * TAU;
+      let x = X0 + 8 + Math.random() * (X1 - X0 - 16); if (Math.abs(x - WX) < 8) x += 20;
+      P.push({ x, y: Y0 + 8 + Math.random() * (Y1 - Y0 - 16), vx: sp * Math.cos(a), vy: sp * Math.sin(a), fast });
+    }
+    let open = 0, tOn = 0;
+    return {
+      step(dt, on) {
+        tOn = on ? tOn + dt : 0; open = Math.max(0, open - dt);
+        for (const p of P) {
+          const px = p.x; p.x += p.vx * dt; p.y += p.vy * dt;
+          if (p.x < X0 + 4) { p.x = X0 + 4; p.vx = Math.abs(p.vx); } if (p.x > X1 - 4) { p.x = X1 - 4; p.vx = -Math.abs(p.vx); }
+          if (p.y < Y0 + 4) { p.y = Y0 + 4; p.vy = Math.abs(p.vy); } if (p.y > Y1 - 4) { p.y = Y1 - 4; p.vy = -Math.abs(p.vy); }
+          if ((px - WX) * (p.x - WX) <= 0) {
+            const ok = p.y > D0 + 3 && p.y < D1 - 3 && (on || (p.vx > 0 ? p.fast : !p.fast));
+            if (ok) { if (!on) open = 0.18; } else { p.x = px; p.vx = -p.vx; }
+          }
+        }
+      },
+      draw(on) {
+        g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(X0, Y0, X1 - X0, Y1 - Y0);
+        g.lineWidth = 3.4; L(g, WX, Y0, WX, D0); L(g, WX, D1, WX, Y1);
+        if (on || open > 0) { g.strokeStyle = C.soft; g.lineWidth = 2.2; L(g, WX, D0, WX + 30, D0 + 22); }
+        else { g.strokeStyle = C.brass; g.lineWidth = 2.6; L(g, WX, D0, WX, D1); }
+        for (const p of P) disc(g, p.x, p.y, 3, p.fast ? C.stamp : C.water);
+        // the demon, perched on the wall
+        g.strokeStyle = C.ink; g.lineWidth = 1.6; L(g, WX - 5, 30, WX - 9, 22); L(g, WX + 5, 30, WX + 9, 22);
+        disc(g, WX, 38, 10, C.plate, C.ink, 1.8);
+        if (on) { g.lineWidth = 1.6; L(g, WX - 5, 38, WX + 5, 38); } else disc(g, WX + (open > 0 ? 3 : -2), 39, 2.6, C.ink);
+        label(g, on ? 'door left open' : 'slow ones collect', X0, Y0 - 10);
+        label(g, on ? 'the sides even out' : 'fast ones collect', X1, Y0 - 10, 'right');
+        if (!QUIET) { disc(g, 36, 284, 3, C.stamp); label(g, 'fast', 44, 288); disc(g, 96, 284, 3, C.water); label(g, 'slow', 104, 288); }
+      },
+      read(on) {
+        let l = 0, nl = 0, r = 0, nr = 0;
+        for (const p of P) { const e = p.vx * p.vx + p.vy * p.vy; if (p.x < WX) { l += e; nl++; } else { r += e; nr++; } }
+        const all = (l + r) / P.length, f = (e, n) => n ? Math.round(300 * e / n / all) + ' K' : 'empty';
+        return [f(l, nl), f(r, nr), on ? 'left open' : 'sorting'];
+      },
+      stalled(on) { return on && tOn > 9; }
+    };
+  };
+
+  /* ---------- Loschmidt's gas column ---------- */
+  M.loschmidt = g => {
+    const X0 = 150, X1 = 270, Y0 = 36, Y1 = 300, P = [], d = drive(1.4, 2.6);
+    for (let i = 0; i < 44; i++) { const sp = 60 + Math.random() * 50, a = Math.random() * TAU; P.push({ x: X0 + 6 + Math.random() * (X1 - X0 - 12), y: Y1 - 6 - 250 * Math.pow(Math.random(), 1.8), vx: sp * Math.cos(a), vy: sp * Math.sin(a), vf: 90 + Math.random() * 85 }); }
+    let th = 0;
+    return {
+      step(dt, on) {
+        d.step(dt, on); th += d.v * dt;
+        for (const p of P) {
+          p.vy += 70 * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+          if (p.x < X0 + 4) { p.x = X0 + 4; p.vx = Math.abs(p.vx); } if (p.x > X1 - 4) { p.x = X1 - 4; p.vx = -Math.abs(p.vx); }
+          if (p.y < Y0 + 4) { p.y = Y0 + 4; p.vy = Math.abs(p.vy); } if (p.y > Y1 - 4) { p.y = Y1 - 4; p.vy = -p.vf; }   // the warm floor sends each one up again
+        }
+      },
+      draw(on) {
+        ground(g, 60, 380, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 1.6; poly(g, [[X1, 60], [336, 60], [336, 150]]); g.stroke(); poly(g, [[X1, 280], [336, 280], [336, 198]]); g.stroke();
+        disc(g, 336, 174, 26, C.plate, C.ink, 2); g.lineWidth = 1.4; spokes(g, 336, 174, 5, 26, 4, th); disc(g, 336, 174, 5, C.plate, C.ink, 1.6);
+        g.fillStyle = C.plate; g.fillRect(X0, Y0, X1 - X0, Y1 - Y0); g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(X0, Y0, X1 - X0, Y1 - Y0);
+        L(g, X0, Y1, X0, 318); L(g, X1, Y1, X1, 318);
+        for (const p of P) disc(g, p.x, p.y, 3, on ? C.soft : (p.y < 150 ? C.water : p.y > 215 ? C.stamp : C.soft));
+        g.strokeStyle = C.soft; g.lineWidth = 1.4; arrow(g, 110, 120, 110, 210, 8);
+        label(g, 'gravity', 100, 110, 'right'); label(g, on ? 'top: 300 K' : 'top: 280 K', 140, 50, 'right'); label(g, 'bottom: 300 K', 140, 296, 'right');
+        label(g, 'engine', 336, 222, 'center');
+      },
+      read(on) { return ['300 K', on ? '300 K' : '280 K', (d.v * 60 / TAU).toFixed(1) + ' rpm']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 13 · Gamgee's zeromotor ---------- */
+  M.zero = g => {
+    const vap = mkPath([[90, 150], [90, 80], [215, 80]], false);
+    const rp = [[228, 100], [228, 150], [190, 165], [270, 185], [190, 205], [270, 225], [190, 245], [228, 262], [228, 308], [90, 308], [90, 290]];
+    const ret = mkPath(rp, false), condLen = mkPath(rp.slice(0, 8), false).len;
+    let pe = 1, om = 2.6, th = 0, flow = 0, tb = 0;
+    return {
+      step(dt, on) {
+        pe += ((on ? 4.3 : 1) - pe) * Math.min(1, (on ? 0.7 : 1.5) * dt);
+        om += (2.6 * (4.3 - pe) / 3.3 - om) * Math.min(1, 2 * dt);
+        th += om * dt; flow += om * 18 * dt; tb += om * dt;
+      },
+      draw() {
+        const f = om / 2.6;
+        g.strokeStyle = C.stamp; g.lineWidth = 1.6; g.globalAlpha = 0.3 + 0.7 * f;
+        for (const y0 of [190, 225, 260]) {
+          g.beginPath(); for (let i = 0; i <= 10; i++) { const x = 6 + i * 2, y = y0 + 3 * Math.sin(i * 1.2 - tb * 3); i ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+          arrow(g, 26, y0, 36, y0, 7);
+        }
+        g.globalAlpha = 1;
+        for (const pth of [vap, ret]) { g.strokeStyle = C.ink; g.lineWidth = 5.5; poly(g, pth.pts); g.stroke(); g.strokeStyle = C.plate; g.lineWidth = 2.6; poly(g, pth.pts); g.stroke(); }
+        rr(g, 40, 150, 100, 140, 12); g.fillStyle = C.plate; g.fill();
+        g.save(); g.clip(); g.globalAlpha = 0.5; g.fillStyle = C.water; g.fillRect(40, 215, 100, 80); g.restore(); g.globalAlpha = 1;
+        rr(g, 40, 150, 100, 140, 12); g.strokeStyle = C.ink; g.lineWidth = 2; g.stroke();
+        if (f > 0.03) for (let k = 0; k < 6; k++) disc(g, 55 + k * 14, 284 - ((tb * 40 + k * 23) % 66), 2.4, null, C.soft, 1.1);
+        for (let q = flow % 20; q < vap.len; q += 20) { const p = vap.at(q); disc(g, p[0], p[1], 1.5, C.ink); }
+        for (let q = flow % 20; q < ret.len; q += 20) { const p = ret.at(q); q > condLen ? disc(g, p[0], p[1], 2.3, C.water) : disc(g, p[0], p[1], 1.5, C.ink); }
+        // cylinder, piston, flywheel
+        g.strokeStyle = C.ink; g.lineWidth = 2; L(g, 368, 80, 350, 130); L(g, 368, 80, 386, 130); L(g, 338, 130, 398, 130);
+        g.fillStyle = C.plate; g.fillRect(215, 60, 63, 40); g.strokeRect(215, 60, 63, 40);
+        const cxp = 368 + 16 * Math.cos(th), cyp = 80 + 16 * Math.sin(th), xp = cxp - Math.sqrt(4900 - (16 * Math.sin(th)) ** 2);
+        g.fillStyle = C.ink; g.fillRect(xp - 54, 62, 8, 36);
+        g.lineWidth = 2.6; L(g, xp - 50, 80, xp, 80); L(g, xp, 80, cxp, cyp);
+        disc(g, xp, 80, 3.5, C.plate, C.ink, 1.6);
+        disc(g, 368, 80, 30, null, C.ink, 2.4); disc(g, 368, 80, 25, null, C.ink, 1);
+        g.lineWidth = 1.4; spokes(g, 368, 80, 5, 25, 4, th); disc(g, 368, 80, 5, C.plate, C.ink, 1.6); disc(g, cxp, cyp, 3, C.ink);
+        label(g, 'ammonia', 90, 262, 'center'); label(g, 'condenser', 282, 209);
+        label(g, '4.3 bar', 100, 132); label(g, pe.toFixed(1) + ' bar', 238, 132);
+        label(g, 'heat in from the sea, 0 °C', 8, 332);
+      },
+      read() { return ['4.3 bar', pe.toFixed(1) + ' bar', (om * 60 / TAU * 4).toFixed(0) + ' rpm']; },
+      stalled(on) { return on && om < 0.07; }
+    };
+  };
+
+  /* ---------- 14 · sea-heat steamer ---------- */
+  M.ship = g => {
+    const d = drive(1, 3.5), ice = [{ x: 50 }], Y = 215;
+    let x = 0, since = 0, count = 1;
+    return {
+      step(dt, on) {
+        d.step(dt, on); const dx = 60 * d.v * dt; x += dx; since += dx;
+        for (const b of ice) b.x -= dx;
+        while (ice.length && ice[0].x < -20) ice.shift();
+        if (since > 58) { since = 0; ice.push({ x: 108 }); count++; }
+      },
+      draw() {
+        g.strokeStyle = C.ink;
+        g.lineWidth = 1.6; L(g, 290, 188, 290, 136); L(g, 290, 142, 232, 132);
+        g.fillStyle = C.plate; g.fillRect(210, 128, 18, 34); g.strokeRect(210, 128, 18, 34); g.fillStyle = C.ink; g.fillRect(210, 134, 18, 5);
+        g.fillStyle = C.plate; g.fillRect(186, 160, 70, 28); g.lineWidth = 1.8; g.strokeRect(186, 160, 70, 28);
+        for (const px of [200, 221, 242]) disc(g, px, 174, 3.5, null, C.ink, 1.2);
+        poly(g, [[118, 188], [338, 188], [306, 232], [134, 232]], true); g.fillStyle = C.plate; g.fill(); g.lineWidth = 2; g.stroke();
+        const wave = xx => Y + 3 * Math.sin((xx + x) * 0.07) + 1.5 * Math.sin((xx + x * 1.4) * 0.19);
+        g.beginPath(); g.moveTo(0, 340); for (let xx = 0; xx <= 420; xx += 6) g.lineTo(xx, wave(xx)); g.lineTo(420, 340); g.closePath();
+        g.globalAlpha = 0.45; g.fillStyle = C.water; g.fill(); g.globalAlpha = 1;
+        g.beginPath(); for (let xx = 0; xx <= 420; xx += 6) xx ? g.lineTo(xx, wave(xx)) : g.moveTo(xx, wave(xx));
+        g.strokeStyle = C.soft; g.lineWidth = 1.4; g.stroke();
+        for (const b of ice) { const by = wave(b.x) - 6; g.fillStyle = C.plate; g.fillRect(b.x - 7, by, 14, 12); g.strokeStyle = C.ink; g.lineWidth = 1.3; g.strokeRect(b.x - 7, by, 14, 12); }
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; g.globalAlpha = d.frac; g.setLineDash([5, 5]); g.lineDashOffset = x;
+        L(g, 92, 226, 128, 226); L(g, 100, 234, 130, 234); g.setLineDash([]); g.lineDashOffset = 0; g.globalAlpha = 1;
+        label(g, 'ice', 60, 190, 'center'); label(g, 'one reservoir: the sea', 16, 306);
+      },
+      read() { return [(12 * d.frac).toFixed(1) + ' kn', (5 * d.frac).toFixed(1) + ' MW', count]; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- one-way mirror between two bodies ---------- */
+  M.mirror = g => {
+    const ph = [];
+    let Ta = 300, Tb = 300, acc = 0, flip = false;
+    return {
+      step(dt, on) {
+        acc += dt; if (acc > 0.11) { acc = 0; flip = !flip; ph.push({ x: flip ? 134 : 286, y: 118 + Math.random() * 104, v: flip ? 150 : -150, born: flip ? 0 : 1 }); }
+        for (const p of ph) {
+          const px = p.x; p.x += p.v * dt;
+          if (!on && p.v < 0 && px >= 213 && p.x < 213) { p.x = 213; p.v = -p.v; }
+        }
+        for (let i = ph.length - 1; i >= 0; i--) if (ph[i].x < 132 || ph[i].x > 288) ph.splice(i, 1);
+        Ta += ((on ? 300 : 255) - Ta) * Math.min(1, 0.25 * dt); Tb += ((on ? 300 : 345) - Tb) * Math.min(1, 0.25 * dt);
+      },
+      draw(on) {
+        const body = (x, T) => {
+          g.fillStyle = C.plate; g.fillRect(x, 108, 82, 124);
+          g.globalAlpha = clamp(Math.abs(T - 300) / 70, 0, 0.7); g.fillStyle = T > 300 ? C.stamp : C.water; g.fillRect(x, 108, 82, 124); g.globalAlpha = 1;
+          g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(x, 108, 82, 124);
+        };
+        body(50, Ta); body(288, Tb);
+        g.strokeStyle = C.ink; g.lineWidth = 3; L(g, 210, 88, 210, 252);
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; for (let y = 96; y < 250; y += 12) L(g, 213, y, on ? 213 : 219, on ? y : y + 6);
+        for (const p of ph) disc(g, p.x, p.y, 2.4, C.brass, C.ink, 0.6);
+        g.fillStyle = C.ink; g.textAlign = 'center'; g.fillText(Math.round(Ta) + ' K', 91, 174); g.fillText(Math.round(Tb) + ' K', 329, 174); g.textAlign = 'left';
+        label(g, 'body A', 91, 100, 'center'); label(g, 'body B', 329, 100, 'center');
+        label(g, on ? 'passes both ways' : 'one-way mirror', 210, 76, 'center'); label(g, 'heat rays', 210, 276, 'center');
+      },
+      read(on) { return [Math.round(Ta) + ' K', Math.round(Tb) + ' K', on ? 'two-way' : 'one-way']; },
+      stalled(on) { return on && Math.abs(Ta - Tb) < 5; }
+    };
+  };
+
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Machines: more of the third kind. Each M.name = g => ({ step, draw, read, stalled }).
+
+  /* ---------- Smoluchowski's trapdoor ---------- */
+  M.trapdoor = g => {
+    const X0 = 30, X1 = 390, Y0 = 50, Y1 = 236, WX = 210, D0 = 108, D1 = 178, P = [];
+    for (let i = 0; i < 38; i++) {
+      const sp = 75 + Math.random() * 40, a = Math.random() * TAU;
+      let x = X0 + 8 + Math.random() * (X1 - X0 - 16); if (Math.abs(x - WX) < 8) x += 20;
+      P.push({ x, y: Y0 + 8 + Math.random() * (Y1 - Y0 - 16), vx: sp * Math.cos(a), vy: sp * Math.sin(a) });
+    }
+    let open = 0, flap = false, tf = 0, tOn = 0, nl = 19, nr = 19, th = 0;
+    return {
+      step(dt, on) {
+        tOn = on ? tOn + dt : 0; open = Math.max(0, open - dt);
+        if (on) { tf -= dt; if (tf <= 0) { flap = !flap; tf = 0.12 + Math.random() * 0.35; } }
+        nl = 0; nr = 0;
+        for (const p of P) {
+          const px = p.x; p.x += p.vx * dt; p.y += p.vy * dt;
+          if (p.x < X0 + 4) { p.x = X0 + 4; p.vx = Math.abs(p.vx); } if (p.x > X1 - 4) { p.x = X1 - 4; p.vx = -Math.abs(p.vx); }
+          if (p.y < Y0 + 4) { p.y = Y0 + 4; p.vy = Math.abs(p.vy); } if (p.y > Y1 - 4) { p.y = Y1 - 4; p.vy = -Math.abs(p.vy); }
+          if ((px - WX) * (p.x - WX) <= 0) {
+            const ok = p.y > D0 + 3 && p.y < D1 - 3 && (on ? flap : p.vx > 0);
+            if (ok) { if (!on) open = 0.16; } else { p.x = px; p.vx = -p.vx; }
+          }
+          if (p.x < WX) nl++; else nr++;
+        }
+        th += Math.max(0, nr - nl) / 38 * 6 * dt;
+      },
+      draw(on) {
+        g.strokeStyle = C.ink; g.lineWidth = 5.5; poly(g, [[110, Y1], [110, 290], [310, 290], [310, Y1]]); g.stroke();
+        g.strokeStyle = C.plate; g.lineWidth = 2.6; poly(g, [[110, Y1 + 2], [110, 290], [310, 290], [310, Y1 + 2]]); g.stroke();
+        disc(g, 210, 290, 15, C.plate, C.ink, 1.8); g.lineWidth = 2; spokes(g, 210, 290, 3, 15, 4, th); disc(g, 210, 290, 3, C.ink);
+        g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(X0, Y0, X1 - X0, Y1 - Y0);
+        g.lineWidth = 3.4; L(g, WX, Y0, WX, D0); L(g, WX, D1, WX, Y1);
+        const sw = on ? (flap ? 0.7 : 0.08) : (open > 0 ? 0.7 : 0);
+        g.strokeStyle = C.brass; g.lineWidth = 2.8; L(g, WX, D0, WX + (D1 - D0) * Math.sin(sw), D0 + (D1 - D0) * Math.cos(sw));
+        g.strokeStyle = C.soft; g.lineWidth = 1; g.beginPath(); for (let i = 0; i <= 12; i++) { const x = WX + 4 + i * 2.6, y = D0 - 6 + (i % 2 ? -4 : 4); i ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+        for (const p of P) disc(g, p.x, p.y, 3, C.soft);
+        label(g, on ? 'the flap is warm too, and flutters' : 'flap opens one way only', X0, Y0 - 10);
+        label(g, 'turbine', 232, 316);
+      },
+      read(on) { return [nl, nr, on ? 'fluttering' : 'one-way']; },
+      stalled(on) { return on && tOn > 7; }
+    };
+  };
+
+  /* ---------- 15 · Brownian ratchet ---------- */
+  M.ratchet = g => {
+    const A = { x: 22, y: 30, w: 166, h: 166 }, B = { x: 232, y: 30, w: 166, h: 166 };
+    const pc = { x: 105, y: 113 }, rc = { x: 315, y: 113 };
+    const VL = 54, Ro = 46, Ri = 36, NT = 12, tooth = TAU / NT, drum = 11;
+    const PA = -0.9, pivot = { x: 290, y: 44 }, FLOOR = 318, HMAX = 88;
+    let th = PA + 0.01, om = 0, lockU = 0, lastU = 0, fwd = 0, back = 0, lifted = 0;
+    let th0 = th, h = 0, bounce = 0, tOn = 0, stuck = false;
+    const P = [];
+    for (let i = 0; i < 44; i++) {
+      const a = Math.random() * TAU, sp = 55 + Math.random() * 45;
+      P.push({ x: A.x + 8 + Math.random() * (A.w - 16), y: A.y + 8 + Math.random() * (A.h - 16), vx: sp * Math.cos(a), vy: sp * Math.sin(a) });
+    }
+    return {
+      set(on) { tOn = 0; fwd = 0; back = 0; stuck = false; lockU = Math.floor((th - PA) / tooth); },
+      step(dt, on) {
+        om += -4 * om * dt + 6.5 * Math.sqrt(dt) * gauss();     // the paddle, buffeted evenly from both sides
+        if (on && h > 0) om -= 5 * dt;                        // the load pulls back whenever the pawl lets go
+        let nth = th + om * dt;
+        const u = (nth - PA) / tooth;
+        if (!on) {
+          if (u < lockU) { nth = lockU * tooth + PA; om = Math.abs(om) * 0.2; } else lockU = Math.floor(u);
+          bounce *= Math.max(0, 1 - 12 * dt);
+        } else { tOn += dt; bounce += -7 * bounce * dt + 16 * Math.sqrt(dt) * gauss(); }
+        th = nth;
+        const iu = Math.floor((th - PA) / tooth + 1e-9);
+        if (iu > lastU) fwd += iu - lastU; else if (iu < lastU) back += lastU - iu;
+        lastU = iu;
+        h = drum * (th - th0);
+        if (h < 0) { th0 = th; h = 0; }
+        if (h >= HMAX) { if (!on) { lifted++; th0 = th; h = 0; } else { th0 = th - HMAX / drum; h = HMAX; } }
+        for (const p of P) {
+          p.x += p.vx * dt; p.y += p.vy * dt;
+          if (p.x < A.x + 4) { p.x = A.x + 4; p.vx = Math.abs(p.vx); } if (p.x > A.x + A.w - 4) { p.x = A.x + A.w - 4; p.vx = -Math.abs(p.vx); }
+          if (p.y < A.y + 4) { p.y = A.y + 4; p.vy = Math.abs(p.vy); } if (p.y > A.y + A.h - 4) { p.y = A.y + A.h - 4; p.vy = -Math.abs(p.vy); }
+          const dx = p.x - pc.x, dy = p.y - pc.y;
+          if (dx * dx + dy * dy < (VL + 5) * (VL + 5)) {
+            for (let k = 0; k < 4; k++) {
+              const a = th + k * Math.PI / 2, ux = Math.cos(a), uy = Math.sin(a);
+              const al = dx * ux + dy * uy; if (al < 4 || al > VL + 2) continue;
+              const dd = -dx * uy + dy * ux; if (Math.abs(dd) >= 4) continue;
+              const rel = -p.vx * uy + p.vy * ux - om * al;
+              if (dd * rel < 0) { p.vx += -2 * rel * -uy; p.vy += -2 * rel * ux; }
+              const push = (dd < 0 ? -4 : 4) - dd; p.x += push * -uy; p.y += push * ux;
+            }
+          }
+          const sp = Math.hypot(p.vx, p.vy), want = clamp(sp, 50, 110);
+          if (sp > 0 && sp !== want) { p.vx *= want / sp; p.vy *= want / sp; }
+        }
+      },
+      draw(on) {
+        g.strokeStyle = C.soft; g.lineWidth = 1.1; L(g, pc.x, pc.y - 8, rc.x, rc.y - 8); L(g, pc.x, pc.y + 8, rc.x, rc.y + 8);
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(A.x, A.y, A.w, A.h); g.strokeRect(B.x, B.y, B.w, B.h);
+        for (const p of P) disc(g, p.x, p.y, 2.4, C.soft);
+        g.strokeStyle = C.ink; g.lineWidth = 3.2; spokes(g, pc.x, pc.y, 8, VL, 4, th);
+        disc(g, pc.x, pc.y, 8, C.plate, C.ink, 1.8);
+        g.beginPath();
+        for (let k = 0; k < NT; k++) {
+          const a0 = th + k * tooth, a1 = a0 + tooth, x0 = rc.x + Ro * Math.cos(a0), y0 = rc.y + Ro * Math.sin(a0);
+          k ? g.lineTo(x0, y0) : g.moveTo(x0, y0); g.lineTo(rc.x + Ri * Math.cos(a1), rc.y + Ri * Math.sin(a1));
+        }
+        g.closePath(); g.fillStyle = C.plate; g.fill(); g.strokeStyle = C.ink; g.lineWidth = 1.7; g.stroke();
+        disc(g, rc.x + 24 * Math.cos(th), rc.y + 24 * Math.sin(th), 3, C.ink);
+        disc(g, rc.x, rc.y, drum, C.plate, C.ink, 1.8); disc(g, rc.x, rc.y, 2.2, C.ink);
+        let f = ((PA - th) / tooth) % 1; if (f < 0) f += 1;
+        const rp = Ro - (Ro - Ri) * f + Math.min(11, Math.abs(bounce));
+        g.strokeStyle = C.ink; g.lineWidth = 3.4; L(g, pivot.x, pivot.y, rc.x + rp * Math.cos(PA), rc.y + rp * Math.sin(PA));
+        disc(g, pivot.x, pivot.y, 4.5, C.plate, C.ink, 1.6);
+        const wx = rc.x - drum, wb = FLOOR - h;
+        g.strokeStyle = C.ink; g.lineWidth = 1.1; L(g, wx, rc.y, wx, wb - 16);
+        g.fillStyle = C.brass; g.fillRect(wx - 12, wb - 16, 24, 16); g.lineWidth = 1.3; g.strokeRect(wx - 12, wb - 16, 24, 16);
+        ground(g, B.x, B.x + B.w, FLOOR);
+        g.strokeStyle = C.soft; g.lineWidth = 1; L(g, wx - 26, FLOOR, wx - 26, FLOOR - HMAX);
+        for (let y = 0; y <= HMAX; y += 11) L(g, wx - 26, FLOOR - y, wx - (y % 44 ? 31 : 35), FLOOR - y);
+        label(g, 'gas at temperature T', A.x, A.y - 9);
+        label(g, on ? 'pawl also at T: slips' : 'pawl never slips', B.x, B.y - 9);
+        label(g, 'load', wx + 20, FLOOR - 8);
+      },
+      read() { return [fwd, back, lifted]; },
+      stalled(on) { if (on && tOn > 4 && h < 8) stuck = true; return on && stuck; }
+    };
+  };
+
+  /* ---------- Szilard's engine ---------- */
+  M.szilard = g => {
+    const XA = 60, XB = 360, YA = 110, YB = 190, DUR = [1.3, 0.4, 0.5, 1.7, 0.9];
+    let x = 120, y = 150, vx = 170, vy = 110, ph = 0, t = 0, side = -1, pist = 210, cycles = 0, cycOn = 0, lift = 0;
+    return {
+      set() { cycOn = 0; },
+      step(dt, on) {
+        t += dt;
+        if (t > DUR[ph]) {
+          t = 0; ph = (ph + 1) % 5;
+          if (ph === 1) { if (Math.abs(x - 210) < 8) x += x < 210 ? -10 : 10; side = x < 210 ? -1 : 1; pist = 210; }
+          if (ph === 0) { cycles++; if (on) cycOn++; side = 0; }
+        }
+        if (ph === 3) pist = 210 - side * 138 * Math.min(1, t / DUR[3]);
+        if (ph === 3) lift = Math.min(1, t / DUR[3]);
+        if (ph === 4) lift = on ? 1 - Math.min(1, t / DUR[4]) : 1;
+        if (ph === 0) lift = on ? 0 : Math.max(0, lift - dt * 3);
+        const lo = ph >= 1 && ph <= 3 && side > 0 ? pist + 5 : XA + 4, hi = ph >= 1 && ph <= 3 && side < 0 ? pist - 5 : XB - 4;
+        x += vx * dt; y += vy * dt;
+        if (x < lo) { x = lo; vx = Math.abs(vx); } if (x > hi) { x = hi; vx = -Math.abs(vx); }
+        if (y < YA + 4) { y = YA + 4; vy = Math.abs(vy); } if (y > YB - 4) { y = YB - 4; vy = -Math.abs(vy); }
+      },
+      draw(on) {
+        g.fillStyle = C.plate; g.fillRect(XA, YA, XB - XA, YB - YA); g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(XA, YA, XB - XA, YB - YA);
+        if (ph >= 1 && ph <= 3) {
+          const drop = ph === 1 ? Math.min(1, t / DUR[1]) : 1;
+          g.strokeStyle = C.ink; g.lineWidth = 5; L(g, pist, YA - 26 + 26 * drop, pist, YA + (YB - YA) * drop);
+        } else { g.strokeStyle = C.soft; g.lineWidth = 5; L(g, 210, YA - 30, 210, YA - 6); }
+        disc(g, x, y, 5, C.stamp, C.ink, 1);
+        // the weight the gas lifts
+        const wy = 300 - 26 - lift * 44;
+        g.strokeStyle = C.soft; g.lineWidth = 1; L(g, 386, 300, 386, 222); for (let k = 0; k <= 4; k++) L(g, 386, 300 - k * 11 - 26, 392, 300 - k * 11 - 26);
+        g.strokeStyle = C.ink; g.lineWidth = 1.2; L(g, 356, YB, 356, wy);
+        g.fillStyle = C.brass; g.fillRect(342, wy, 28, 26); g.strokeRect(342, wy, 28, 26);
+        ground(g, 320, 400, 300);
+        // the demon's record
+        g.fillStyle = C.plate; g.fillRect(150, 226, 120, 50); g.strokeStyle = C.ink; g.lineWidth = 1.6; g.strokeRect(150, 226, 120, 50);
+        const erasing = on && ph === 4;
+        g.fillStyle = erasing ? C.stamp : C.ink; g.font = '700 26px ' + MONO; g.textAlign = 'center';
+        g.fillText(erasing ? 'wipe' : ph >= 2 && side ? (side < 0 ? 'LEFT' : 'RIGHT') : '· · ·', 210, 261);
+        g.font = '500 12.5px ' + MONO; g.textAlign = 'left';
+        if (erasing) { g.strokeStyle = C.stamp; g.lineWidth = 1.6; arrow(g, 140, 240, 116, 232, 7); arrow(g, 140, 262, 116, 270, 7); arrow(g, 280, 240, 304, 232, 7); }
+        label(g, 'one molecule', XA, YA - 12); label(g, 'record', 210, 294, 'center'); label(g, 'partition', 222, YA - 14);
+      },
+      read(on) { return [cycles, 'kT ln 2', on ? 'kT ln 2' : 'ignored']; },
+      stalled(on) { return on && cycOn >= 2; }
+    };
+  };
+
+  /* ---------- 16 · noise rectifier ---------- */
+  M.diode = g => {
+    const loop = mkPath([[80, 80], [340, 80], [340, 250], [80, 250]], true), tr = new Array(64).fill(0);
+    let off = 0, q = 0, fwd = 0, back = 0, tOn = 0, nz = 0, acc = 0;
+    return {
+      set() { fwd = 0; back = 0; },
+      step(dt, on) {
+        tOn = on ? tOn + dt : 0;
+        nz += -8 * nz * dt + 4 * Math.sqrt(dt) * gauss();
+        const i = on ? nz : Math.max(0, nz);
+        off += i * 60 * dt; if (i > 0) fwd += i * dt * 40; else back -= i * dt * 40;
+        q += on ? (i * 40 - q * 1.5) * dt : i * dt * 40;
+        acc += dt; if (acc > 0.04) { acc = 0; tr.push(i); tr.shift(); }
+      },
+      draw() {
+        g.strokeStyle = C.ink; g.lineWidth = 1.6; g.strokeRect(80, 80, 260, 170);
+        g.fillStyle = C.plate; g.fillRect(70, 118, 20, 94); g.fillRect(180, 68, 60, 24); g.fillRect(330, 157, 20, 16);
+        const z = [[80, 118]]; for (let k = 0; k < 8; k++) z.push([80 + (k % 2 ? -8 : 8), 124 + k * 11.7]); z.push([80, 212]);
+        poly(g, z); g.stroke();
+        poly(g, [[192, 68], [192, 92], [226, 80]], true); g.fillStyle = C.plate; g.fill(); g.lineWidth = 2; g.stroke();
+        L(g, 226, 67, 226, 93); g.lineWidth = 1.6; L(g, 180, 80, 192, 80); L(g, 226, 80, 240, 80);
+        g.lineWidth = 2.8; L(g, 322, 160, 358, 160); L(g, 322, 170, 358, 170);
+        for (let k = 0; k < 14; k++) { const p = loop.at(off + k * loop.len / 14); disc(g, p[0], p[1], 2.7, C.brass, C.ink, 0.8); }
+        g.strokeStyle = C.line; g.lineWidth = 1; g.strokeRect(112, 118, 160, 94);
+        g.strokeStyle = C.soft; g.setLineDash([3, 4]); L(g, 116, 165, 268, 165); g.setLineDash([]);
+        g.strokeStyle = C.ink; g.lineWidth = 1.5; g.beginPath();
+        tr.forEach((v, j) => { const x = 116 + j * (152 / 63), y = 165 - clamp(v, -2.6, 2.6) * 15; j ? g.lineTo(x, y) : g.moveTo(x, y); });
+        g.stroke();
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; g.strokeRect(374, 110, 10, 110);
+        const lv = clamp(q / 60, 0, 1) * 108; g.fillStyle = C.brass; g.fillRect(375, 219 - lv, 8, lv);
+        label(g, 'resistor', 64, 169, 'right'); label(g, 'diode', 210, 58, 'center'); label(g, 'capacitor', 332, 232, 'right');
+        label(g, 'loop current', 116, 228); label(g, 'charge', 379, 102, 'center');
+        label(g, 'resistor and diode at one temperature', 210, 34, 'center');
+      },
+      read() { return [fwd.toFixed(0) + ' fC', back.toFixed(0) + ' fC', q.toFixed(0) + ' fC']; },
+      stalled(on) { return on && tOn > 5; }
+    };
+  };
+
+  /* ---------- thermocouple loop at one temperature ---------- */
+  M.thermoloop = g => {
+    const cx = 210, cy = 172, R = 96;
+    let I = 1, th = 0, still = 0;
+    return {
+      step(dt, on) {
+        if (on) { I = Math.max(0, I - (I / 0.6 + 0.03) * dt); still = I === 0 ? still + dt : 0; } else { I += (1 - I) * Math.min(1, 1.5 * dt); still = 0; }
+        th += I * 1.4 * dt;
+      },
+      draw(on) {
+        g.lineCap = 'butt'; g.lineWidth = 13; g.strokeStyle = C.ink; g.beginPath(); g.arc(cx, cy, R, 0, TAU); g.stroke();
+        g.lineWidth = 10; g.strokeStyle = C.brass; g.beginPath(); g.arc(cx, cy, R, Math.PI / 2, 1.5 * Math.PI); g.stroke();
+        g.strokeStyle = C.soft; g.beginPath(); g.arc(cx, cy, R, -Math.PI / 2, Math.PI / 2); g.stroke(); g.lineCap = 'round';
+        disc(g, cx, cy - R, 8, C.plate, C.ink, 2); disc(g, cx, cy + R, 8, C.plate, C.ink, 2);
+        g.globalAlpha = 0.2 + 0.8 * I; for (let k = 0; k < 14; k++) { const a = th + k * TAU / 14; disc(g, cx + R * Math.cos(a), cy + R * Math.sin(a), 2.6, C.plate, C.ink, 0.9); } g.globalAlpha = 1;
+        disc(g, cx, cy, 40, C.plate, C.ink, 1.8); g.strokeStyle = C.soft; g.lineWidth = 1; spokes(g, cx, cy, 34, 40, 12, 0);
+        const na = -Math.PI / 2 + 1.05 * I, ca = Math.cos(na), sa = Math.sin(na);
+        poly(g, [[cx + 30 * ca, cy + 30 * sa], [cx - 5 * sa, cy + 5 * ca], [cx + 5 * sa, cy - 5 * ca]], true); g.fillStyle = C.stamp; g.fill();
+        poly(g, [[cx - 30 * ca, cy - 30 * sa], [cx - 5 * sa, cy + 5 * ca], [cx + 5 * sa, cy - 5 * ca]], true); g.fillStyle = C.soft; g.fill();
+        disc(g, cx, cy, 3, C.ink);
+        label(g, 'copper', cx - R - 12, cy + 4, 'right'); label(g, 'bismuth', cx + R + 12, cy + 4);
+        label(g, '+2 mV', cx + 14, cy - R - 14); label(g, on ? '-2 mV: they cancel' : '+2 mV', cx + 14, cy + R + 22);
+      },
+      read(on) { return ['+2 mV', on ? '-2 mV' : '+2 mV', (I * 30).toFixed(0) + ' mA']; },
+      stalled() { return still > 0.6; }
+    };
+  };
+
+  /* ---------- radiometer in an even room ---------- */
+  M.radiometer = g => {
+    const d = drive(1.6, 3), cx = 210, cy = 150;
+    let th = 0, w = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th -= d.v * dt; w += dt; },
+      draw(on) {
+        ground(g, 90, 330, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2; poly(g, [[196, 246], [190, 300], [150, 310], [150, 318]]); g.stroke(); poly(g, [[224, 246], [230, 300], [270, 310], [270, 318]]); g.stroke();
+        g.globalAlpha = 0.06; disc(g, cx, cy, 102, C.ink); g.globalAlpha = 1; disc(g, cx, cy, 102, null, C.soft, 2);
+        g.strokeStyle = C.stamp; g.lineWidth = 1.4; g.globalAlpha = 0.35 + 0.5 * d.frac;
+        for (let k = 0; k < 6; k++) {
+          const a = k * TAU / 6 + 0.5, ca = Math.cos(a), sa = Math.sin(a);
+          g.beginPath(); for (let i = 0; i <= 12; i++) { const r = 150 - i * 2.2, o = 3 * Math.sin(i * 1.1 - w * 5); const x = cx + r * ca - o * sa, y = cy + r * sa + o * ca; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+          arrow(g, cx + 124 * ca, cy + 124 * sa, cx + 114 * ca, cy + 114 * sa, 7);
+        }
+        g.globalAlpha = 1;
+        for (let k = 0; k < 4; k++) {
+          // each vane is a plate seen edge-on: black on one face, bright on the other
+          const a = th + k * Math.PI / 2, ca = Math.cos(a), sa = Math.sin(a), P = (r, o) => [cx + r * ca - o * sa, cy + r * sa + o * ca];
+          g.strokeStyle = C.ink; g.lineWidth = 1.4; L(g, cx, cy, cx + 46 * ca, cy + 46 * sa);
+          g.lineCap = 'butt'; g.lineWidth = 5;
+          let p1 = P(44, 2.5), p2 = P(80, 2.5); L(g, p1[0], p1[1], p2[0], p2[1]);
+          g.strokeStyle = C.brass; p1 = P(44, -2.5); p2 = P(80, -2.5); L(g, p1[0], p1[1], p2[0], p2[1]);
+          g.lineCap = 'round';
+        }
+        disc(g, cx, cy, 4, C.plate, C.ink, 1.6); g.strokeStyle = C.ink; g.lineWidth = 1.6; L(g, cx, cy, cx, 248);
+        label(g, on ? 'room, glass and vanes all at 20 °C' : 'the warmth of the room', 12, 20);
+      },
+      read(on) { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', on ? '20.0 °C' : '20.6 °C', '20.0 °C']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- heat pump feeding a heat engine ---------- */
+  M.heatpump = g => {
+    const d = drive(1, 2.6);
+    let th = 0, flow = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += 2.4 * d.v * dt; flow += 40 * d.v * dt; },
+      draw(on) {
+        const f = d.frac, fat = (u, x1, y1, x2, y2, col) => { g.strokeStyle = col; g.lineWidth = 2 + 4 * u * f; g.setLineDash([8, 5]); g.lineDashOffset = -flow; g.lineCap = 'butt'; L(g, x1, y1, x2, y2); g.setLineDash([]); g.lineCap = 'round'; };
+        g.globalAlpha = 0.3; g.fillStyle = C.stamp; g.fillRect(60, 40, 300, 30); g.fillStyle = C.water; g.fillRect(60, 270, 300, 30); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(60, 40, 300, 30); g.strokeRect(60, 270, 300, 30);
+        fat(2, 130, 270, 130, 206, C.water); fat(3, 130, 134, 130, 72, C.stamp);
+        fat(3, 290, 70, 290, 134, C.stamp); fat(on ? 2.4 : 1.6, 290, 206, 290, 268, C.water);
+        fat(on ? 0.6 : 1.4, 254, 170, 168, 170, C.brass);
+        g.lineDashOffset = 0;
+        for (const cx of [130, 290]) { disc(g, cx, 170, 36, C.plate, C.ink, 2); g.lineWidth = 1.4; spokes(g, cx, 170, 6, 26, 5, cx < 200 ? th : -th); disc(g, cx, 170, 6, C.plate, C.ink, 1.6); }
+        g.strokeStyle = C.brass; g.lineWidth = 2; arrow(g, 180, 170, 168, 170, 9);
+        label(g, 'warm room', 210, 60, 'center'); label(g, 'cold outdoors', 210, 290, 'center');
+        label(g, 'pump', 130, 226, 'center'); label(g, 'engine', 290, 226, 'center'); label(g, 'work', 210, 160, 'center');
+      },
+      read(on) { const f = d.frac; return [(1 * f).toFixed(1) + ' kW', (3 * f).toFixed(1) + ' kW', ((on ? 0.6 : 1.4) * f).toFixed(1) + ' kW']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- 17 · pendulum in a bell jar ---------- */
+  M.pend = g => {
+    const px = 210, py = 72, LEN = 150, W2 = 8.2, A0 = 30 * Math.PI / 180, E0 = W2 * (1 - Math.cos(A0));
+    let th = A0, om = 0, half = 0, peak = A0, amp = A0;
+    const gas = []; for (let i = 0; i < 16; i++) gas.push({ x: 104 + Math.random() * 212, y: 112 + Math.random() * 170, p: Math.random() * TAU });
+    const energy = () => 0.5 * om * om + W2 * (1 - Math.cos(th));
+    return {
+      step(dt, on) {
+        const n = 4, hh = dt / n;
+        for (let k = 0; k < n; k++) {
+          let c = on ? 0.32 : 0;
+          if (!on) { const E = energy(); if (E < E0 * 0.995) { c = -0.9; if (Math.abs(om) < 0.05 && Math.abs(th) < 0.02) om += 0.08; } else if (E > E0 * 1.005) c = 0.5; }
+          om += (-W2 * Math.sin(th) - c * om) * hh;
+          const was = th; th += om * hh; peak = Math.max(peak, Math.abs(th));
+          if ((was < 0) !== (th < 0)) { if (peak > 0.009) half++; amp = peak; peak = 0; }
+        }
+        for (const m of gas) m.p += dt * 2;
+      },
+      draw(on) {
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; g.fillStyle = C.plate; g.fillRect(66, 292, 288, 12); g.strokeRect(66, 292, 288, 12);
+        L(g, 90, 304, 90, 318); L(g, 330, 304, 330, 318); ground(g, 40, 380, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, px, 28, px, py);
+        const RS = 172; g.strokeStyle = C.soft; g.lineWidth = 1; g.fillStyle = C.soft; g.textAlign = 'center';
+        g.beginPath(); g.arc(px, py, RS, Math.PI / 2 - 35 * Math.PI / 180, Math.PI / 2 + 35 * Math.PI / 180); g.stroke();
+        for (let dg = -35; dg <= 35; dg += 5) {
+          const a = dg * Math.PI / 180, len = dg % 10 ? 4 : 8;
+          L(g, px + RS * Math.sin(a), py + RS * Math.cos(a), px + (RS + len) * Math.sin(a), py + (RS + len) * Math.cos(a));
+          if (dg % 30 === 0) g.fillText(Math.abs(dg) + '°', px + (RS + 21) * Math.sin(a), py + (RS + 21) * Math.cos(a) + 4);
+        }
+        g.textAlign = 'left'; g.setLineDash([3, 5]);
+        for (const sg of [-1, 1]) L(g, px, py, px + sg * (LEN + 13) * Math.sin(A0), py + (LEN + 13) * Math.cos(A0));
+        g.setLineDash([]);
+        if (on) for (const m of gas) disc(g, m.x + 3 * Math.cos(m.p), m.y + 3 * Math.sin(m.p * 1.3), 1.8, C.soft);
+        const bx = px + LEN * Math.sin(th), by = py + LEN * Math.cos(th);
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, px, py, bx, by);
+        L(g, bx + 13 * Math.sin(th), by + 13 * Math.cos(th), px + (RS - 3) * Math.sin(th), py + (RS - 3) * Math.cos(th));
+        disc(g, bx, by, 13, C.brass, C.ink, 1.6); disc(g, px, py, 4, C.plate, C.ink, 1.8);
+        g.beginPath(); g.moveTo(88, 292); g.lineTo(88, 95); g.ellipse(210, 95, 122, 67, 0, Math.PI, TAU); g.lineTo(332, 292);
+        g.globalAlpha = 0.06; g.fillStyle = C.ink; g.fill(); g.globalAlpha = 1; g.strokeStyle = C.soft; g.lineWidth = 2; g.stroke();
+        g.lineWidth = 1.8; L(g, 210, 28, 210, 22); disc(g, 210, 15, 7, C.plate, C.soft, 1.8);
+        label(g, on ? 'residual gas, real pivot' : 'perfect vacuum', 12, 20);
+      },
+      read() { const e = energy() / E0; return [Math.floor(half / 2), (amp * 180 / Math.PI).toFixed(1) + '°', Math.round(clamp(e, 0, 1) * 100) + '%']; },
+      stalled(on) { return on && energy() / E0 < 0.004; }
+    };
+  };
+
+  /* ---------- ball in a frictionless bowl ---------- */
+  M.bowl = g => {
+    const cx = 210, cy = 40, RB = 232, rb = 13, W2 = 7, A0 = 0.82, E0 = W2 * (1 - Math.cos(A0));
+    let th = A0, om = 0, half = 0, peak = A0, amp = A0;
+    const energy = () => 0.5 * om * om + W2 * (1 - Math.cos(th));
+    return {
+      step(dt, on) {
+        const n = 4, hh = dt / n;
+        for (let k = 0; k < n; k++) {
+          let c = on ? 0.4 : 0;
+          if (!on) { const E = energy(); if (E < E0 * 0.995) { c = -0.9; if (Math.abs(om) < 0.05 && Math.abs(th) < 0.02) om += 0.08; } else if (E > E0 * 1.005) c = 0.5; }
+          om += (-W2 * Math.sin(th) - c * om) * hh; const was = th; th += om * hh; peak = Math.max(peak, Math.abs(th));
+          if ((was < 0) !== (th < 0)) { if (peak > 0.012) half++; amp = peak; peak = 0; }
+        }
+      },
+      draw() {
+        ground(g, 50, 370, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, 150, 264, 150, 318); L(g, 270, 264, 270, 318);
+        g.lineWidth = 4; g.beginPath(); g.arc(cx, cy, RB, Math.PI / 2 - 0.98, Math.PI / 2 + 0.98); g.stroke();
+        const hy = cy + (RB - rb - 2) * Math.cos(A0) - rb;
+        g.strokeStyle = C.soft; g.lineWidth = 1; g.setLineDash([3, 5]); L(g, 30, hy, 390, hy); g.setLineDash([]);
+        const r = RB - rb - 2, bx = cx + r * Math.sin(th), by = cy + r * Math.cos(th), roll = -th * r / rb;
+        disc(g, bx, by, rb, C.brass, C.ink, 1.6); g.lineWidth = 1.2; spokes(g, bx, by, 0, rb, 2, roll);
+        label(g, 'height of release', 30, hy - 8);
+      },
+      read() { const e = energy() / E0; return [half, Math.round(clamp((1 - Math.cos(amp)) / (1 - Math.cos(A0)), 0, 1) * 100) + '%', Math.round(clamp(e, 0, 1) * 100) + '%']; },
+      stalled(on) { return on && energy() / E0 < 0.004; }
+    };
+  };
+
+  /* ---------- weight on a perfect spring ---------- */
+  M.spring = g => {
+    const A0 = 46, W = TAU / 1.5, Y0 = 196;
+    let ph = 0, A = A0, n = 0, sgn = 1;
+    return {
+      step(dt, on) {
+        if (!on) A += (A0 - A) * Math.min(1, 1.2 * dt); else A = Math.max(0, A - (A * 0.22 + 0.25) * dt);
+        ph += W * dt; const s = Math.cos(ph) >= 0 ? 1 : -1; if (s !== sgn) { sgn = s; if (s > 0 && A > 1) n++; }
+      },
+      draw() {
+        const y = Y0 + A * Math.cos(ph);
+        g.strokeStyle = C.ink; g.lineWidth = 2.6; L(g, 120, 50, 300, 50); g.lineWidth = 1; for (let x = 126; x <= 300; x += 9) L(g, x, 50, x + 6, 44);
+        g.lineWidth = 2.2; L(g, 120, 50, 120, 318); ground(g, 80, 340, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2; g.beginPath(); g.moveTo(210, 50); g.lineTo(210, 62);
+        const n2 = 22, len = y - 22 - 62; for (let k = 1; k <= n2; k++) g.lineTo(210 + (k === n2 ? 0 : (k % 2 ? 16 : -16)), 62 + len * k / n2);
+        g.lineTo(210, y - 14); g.stroke();
+        g.fillStyle = C.brass; g.fillRect(184, y - 14, 52, 40); g.lineWidth = 1.6; g.strokeRect(184, y - 14, 52, 40);
+        g.strokeStyle = C.soft; g.lineWidth = 1; L(g, 290, 130, 290, 270); for (let k = 0; k <= 14; k++) L(g, 290, 130 + k * 10, k % 5 ? 296 : 300, 130 + k * 10);
+        g.strokeStyle = C.ink; g.lineWidth = 1.4; arrow(g, 240, y + 6, 286, y + 6, 7);
+        g.strokeStyle = C.soft; g.setLineDash([3, 5]); L(g, 150, Y0 - A0 + 6, 286, Y0 - A0 + 6); L(g, 150, Y0 + A0 + 6, 286, Y0 + A0 + 6); g.setLineDash([]);
+      },
+      read() { return [n, (2 * A).toFixed(0) + ' mm', Math.round((A / A0) ** 2 * 100) + '%']; },
+      stalled(on) { return on && A < 0.3; }
+    };
+  };
+
+  /* ---------- 18 · Newton's cradle ---------- */
+  M.cradle = g => {
+    const A0 = 0.6, W = TAU / 1.25, LEN = 165, top = 58;
+    let ph = 0.6, A = A0, clicks = 0, sgn = 1;
+    return {
+      step(dt, on) {
+        if (!on) A += (A0 - A) * Math.min(1, 1.2 * dt);
+        ph += W * dt;
+        const s = Math.sin(ph) >= 0 ? 1 : -1;
+        if (s !== sgn) { sgn = s; if (A > 0.012) clicks++; if (on) A *= 0.9; }
+        if (on && A < 0.012) A = Math.max(0, A - 0.03 * dt);
+      },
+      draw() {
+        ground(g, 50, 370, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.6; L(g, 100, top, 320, top); L(g, 100, top, 84, 318); L(g, 320, top, 336, 318);
+        const sw = Math.sin(ph);
+        for (let i = 0; i < 5; i++) {
+          const x0 = 146 + 32 * i, a = i === 4 ? A * Math.max(0, sw) : i === 0 ? -A * Math.max(0, -sw) : 0;
+          const bx = x0 + LEN * Math.sin(a), by = top + LEN * Math.cos(a);
+          g.strokeStyle = C.soft; g.lineWidth = 1.1; L(g, x0, top, bx, by);
+          disc(g, bx, by, 16, C.brass, C.ink, 1.6);
+        }
+      },
+      read(on) { return [clicks, Math.round((A / A0) ** 2 * 100) + '%', on ? '19%' : '0%']; },
+      stalled(on) { return on && A < 0.012; }
+    };
+  };
+
+  /* ---------- spinning top ---------- */
+  M.top = g => {
+    let w = 1, spin = 0, prec = 0, tilt = 0.05, down = 0;
+    return {
+      step(dt, on) {
+        if (on) w = Math.max(0, w - (w / 5 + 0.03) * dt); else w += (1 - w) * Math.min(1, 1.3 * dt);
+        spin += w * 16 * dt; prec += (0.6 + 2.2 * (1 - w)) * dt * (w > 0.02 ? 1 : 0);
+        const want = w < 0.14 ? 1.42 : 0.05 + 0.5 * (1 - w) * (1 - w);
+        tilt += (want - tilt) * Math.min(1, (w < 0.14 ? 3 : 4) * dt);
+        down = on && w < 0.14 && tilt > 1.38 ? down + dt : 0;
+      },
+      draw() {
+        ground(g, 60, 360, 290);
+        const lean = tilt * (w < 0.14 ? 1 : Math.cos(prec)), ca = Math.cos(lean), sa = Math.sin(lean), T = (x, y) => [210 + x * ca - y * sa, 290 + x * sa + y * ca];
+        const body = [[0, 0], [-40, -60], [-40, -74], [-8, -86], [-8, -114], [8, -114], [8, -86], [40, -74], [40, -60]].map(p => T(p[0], p[1]));
+        poly(g, body, true); g.fillStyle = C.plate; g.fill(); g.globalAlpha = 0.35; g.fillStyle = C.brass; g.fill(); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 2; g.stroke();
+        g.lineWidth = 1.6;
+        for (let k = 0; k < 6; k++) { const a = spin + k * Math.PI / 3; if (Math.cos(a) < 0) continue; const x = 40 * Math.sin(a), p1 = T(x, -60), p2 = T(x, -74), p3 = T(x * 0.2, -86), p0 = T(x * 0.5, -30); L(g, p1[0], p1[1], p2[0], p2[1]); L(g, p2[0], p2[1], p3[0], p3[1]); L(g, p1[0], p1[1], p0[0], p0[1]); }
+        if (w > 0.14) { g.strokeStyle = C.soft; g.lineWidth = 1; g.setLineDash([3, 4]); g.beginPath(); g.ellipse(210, 290 - 114 * Math.cos(tilt), 114 * Math.sin(tilt) + 0.5, 5 + 20 * Math.sin(tilt), 0, 0, TAU); g.stroke(); g.setLineDash([]); }
+      },
+      read() { return [Math.round(w * 18) * 100 + ' rpm', (tilt * 180 / Math.PI).toFixed(0) + '°', w < 0.14 ? (tilt > 1.3 ? 'fallen' : 'falling') : tilt > 0.12 ? 'wobbling' : 'steady']; },
+      stalled() { return down > 0.5; }
+    };
+  };
+
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Machines: the impostors, the mercury bellows and the two-liquid fountain. Each M.name = g => ({ step, draw, read, stalled }).
+
+  /* ---------- tuning fork ---------- */
+  M.fork = g => {
+    let ph = 0, A = 1, w = 0;
+    return {
+      step(dt, on) { if (!on) A += (1 - A) * Math.min(1, 1.2 * dt); else A = Math.max(0, A - (A * 0.18 + 0.008) * dt); ph += 38 * dt; w += dt; },
+      draw(on) {
+        ground(g, 90, 330, 318);
+        g.fillStyle = C.plate; g.fillRect(150, 292, 120, 26); g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(150, 292, 120, 26);
+        const dx = 9 * A * Math.sin(ph);
+        if (on) {
+          g.strokeStyle = C.soft; g.lineWidth = 1.4;
+          for (let k = 0; k < 4; k++) {
+            const u = ((w * 0.9 + k / 4) % 1), r = 30 + u * 110; g.globalAlpha = (1 - u) * A;
+            g.beginPath(); g.arc(238, 140, r, -0.7, 0.7); g.stroke(); g.beginPath(); g.arc(182, 140, r, Math.PI - 0.7, Math.PI + 0.7); g.stroke();
+          }
+          g.globalAlpha = 1;
+        } else {
+          g.beginPath(); g.moveTo(96, 292); g.lineTo(96, 100); g.ellipse(210, 100, 114, 62, 0, Math.PI, TAU); g.lineTo(324, 292);
+          g.globalAlpha = 0.06; g.fillStyle = C.ink; g.fill(); g.globalAlpha = 1; g.strokeStyle = C.soft; g.lineWidth = 2; g.stroke();
+        }
+        g.strokeStyle = C.ink; g.lineWidth = 9; g.lineCap = 'butt'; L(g, 210, 292, 210, 226);
+        for (const sg of [-1, 1]) {
+          g.beginPath(); g.moveTo(210, 228); g.lineTo(210 + sg * 24, 228);
+          for (let k = 1; k <= 12; k++) { const t = k / 12; g.lineTo(210 + sg * (24 + dx * t * t), 228 - 150 * t); }
+          g.lineJoin = 'miter'; g.stroke();
+        }
+        g.lineCap = 'round'; g.lineJoin = 'round';
+        label(g, on ? 'the note you hear is energy leaving' : 'silent, in a vacuum', 12, 20);
+      },
+      read(on) { return ['440 Hz', Math.round(A * 100) + '%', on ? 'yes' : 'none']; },
+      stalled(on) { return on && A < 0.012; }
+    };
+  };
+
+  /* ---------- 19 · flywheel in a vacuum ---------- */
+  M.fly = g => {
+    const d = drive(3, 6), cx = 210, cy = 160, gas = [];
+    for (let i = 0; i < 16; i++) gas.push([Math.random() * TAU, 99 + Math.random() * 10]);
+    let th = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; },
+      draw(on) {
+        ground(g, 70, 350, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 2.4; L(g, 150, 256, 128, 318); L(g, 270, 256, 292, 318);
+        disc(g, cx, cy, 118, C.plate, C.ink, 2.2); disc(g, cx, cy, 112, null, C.ink, 1);
+        for (let k = 0; k < 12; k++) { const a = k * TAU / 12 + 0.26; disc(g, cx + 125 * Math.cos(a), cy + 125 * Math.sin(a), 2.6, C.ink); }
+        if (on) for (const m of gas) disc(g, cx + m[1] * Math.cos(m[0]), cy + m[1] * Math.sin(m[0]), 1.8, C.soft);
+        disc(g, cx, cy, 92, C.plate, C.ink, 2); g.globalAlpha = 0.4; disc(g, cx, cy, 92, C.brass); g.globalAlpha = 1;
+        disc(g, cx, cy, 72, C.plate, C.ink, 1.4);
+        g.strokeStyle = C.ink; g.lineWidth = 5; spokes(g, cx, cy, 14, 72, 3, th);
+        disc(g, cx + 82 * Math.cos(th), cy + 82 * Math.sin(th), 4, C.ink);
+        g.lineWidth = 6; g.lineCap = 'butt';
+        for (let k = 0; k < 4; k++) { g.strokeStyle = k % 2 ? C.water : C.stamp; g.beginPath(); g.arc(cx, cy, 22, k * Math.PI / 2 + 0.12, (k + 1) * Math.PI / 2 - 0.12); g.stroke(); }
+        g.lineCap = 'round';
+        disc(g, cx, cy, 11, C.plate, C.ink, 2); g.lineWidth = 1.4; spokes(g, cx, cy, 0, 11, 2, th);
+        label(g, on ? 'leftover gas drags on the rim' : 'hard vacuum, shaft held by magnets', 12, 18);
+      },
+      read(on) { return [(Math.round(200 * d.frac) * 100).toLocaleString('en-US') + ' rpm', Math.round(d.frac * d.frac * 100) + '%', on ? 'some' : 'none']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- satellite in orbit ---------- */
+  M.orbit = g => {
+    const cx = 210, cy = 170, RP = 46, R0 = 122, trail = [];
+    let r = R0, a = 0, orbits = 0, gone = 0, flash = 0;
+    return {
+      step(dt, on) {
+        if (gone) { gone += dt; flash = Math.max(0, flash - dt); if (!on) { gone = 0; r = R0; trail.length = 0; } return; }
+        if (on) r -= (5 + (R0 - r) * 0.45) * dt; else r += (R0 - r) * Math.min(1, 1.5 * dt);
+        const w = 0.9 * Math.pow(R0 / r, 1.5), na = a + w * dt;
+        if (Math.floor(na / TAU) > Math.floor(a / TAU)) orbits++;
+        a = na; trail.push([cx + r * Math.cos(a), cy - r * Math.sin(a)]); if (trail.length > 70) trail.shift();
+        if (r < RP + 9) { gone = 0.01; flash = 0.6; }
+      },
+      draw(on) {
+        g.strokeStyle = C.line; g.lineWidth = 1; g.setLineDash([3, 5]); g.beginPath(); g.arc(cx, cy, R0, 0, TAU); g.stroke(); g.setLineDash([]);
+        if (on) { g.globalAlpha = 0.12; disc(g, cx, cy, RP + 44, C.water); g.globalAlpha = 0.16; disc(g, cx, cy, RP + 20, C.water); g.globalAlpha = 1; }
+        disc(g, cx, cy, RP, C.plate, C.ink, 2); g.globalAlpha = 0.45; disc(g, cx, cy, RP, C.water); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1; g.beginPath(); g.ellipse(cx, cy, RP, 14, 0, 0, Math.PI); g.stroke(); g.beginPath(); g.ellipse(cx, cy, 20, RP, 0, -Math.PI / 2, Math.PI / 2); g.stroke();
+        if (trail.length > 1 && !gone) { g.strokeStyle = C.soft; g.lineWidth = 1.2; poly(g, trail); g.stroke(); }
+        if (!gone) { const p = trail[trail.length - 1] || [cx + r, cy]; g.fillStyle = C.brass; g.fillRect(p[0] - 5, p[1] - 4, 10, 8); g.strokeStyle = C.ink; g.lineWidth = 1.2; g.strokeRect(p[0] - 5, p[1] - 4, 10, 8); L(g, p[0] - 12, p[1], p[0] + 12, p[1]); }
+        if (flash > 0) { const p = trail[trail.length - 1]; g.globalAlpha = flash / 0.6; disc(g, p[0], p[1], 6 + 30 * (0.6 - flash), C.stamp); g.globalAlpha = 1; }
+        label(g, on ? 'thin air reaches this high' : 'no air at all', 12, 20); label(g, 'Earth', cx, cy + RP + 16, 'center');
+      },
+      read(on) { return [orbits, gone ? 'burned up' : Math.round((r - RP) * 5.26) + ' km', on ? 'slight' : 'none']; },
+      stalled(on) { return on && gone > 0.8; }
+    };
+  };
+
+  /* ---------- light between perfect mirrors ---------- */
+  M.light = g => {
+    const XA = 76, XB = 344;
+    let x = 120, v = 520, I = 1, bounces = 0;
+    return {
+      step(dt, on) {
+        if (!on) I += (1 - I) * Math.min(1, 1.2 * dt);
+        x += v * dt;
+        if (x > XB) { x = XB; v = -v; hit(on); } else if (x < XA) { x = XA; v = -v; hit(on); }
+        function hit(o) { if (I > 0.012) bounces++; if (o) I *= 0.82; }
+        if (on && I < 0.012) I = Math.max(0, I - 0.03 * dt);
+      },
+      draw() {
+        ground(g, 40, 380, 318);
+        for (const mx of [XA - 14, XB]) {
+          g.fillStyle = C.plate; g.fillRect(mx, 84, 14, 176); g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(mx, 84, 14, 176);
+          g.lineWidth = 1; const hx = mx === XB ? XB + 14 : XA - 14; for (let y = 90; y < 260; y += 9) L(g, hx, y, hx + (mx === XB ? 6 : -6), y + 6);
+          g.lineWidth = 2.2; L(g, mx + 7, 260, mx + 7, 318);
+        }
+        g.strokeStyle = C.brass; g.globalAlpha = 0.25 * I; g.lineWidth = 3; L(g, XA, 172, XB, 172);
+        const tail = v > 0 ? Math.max(XA, x - 46) : Math.min(XB, x + 46);
+        g.globalAlpha = I; g.lineWidth = 6; L(g, tail, 172, x, 172); disc(g, x, 172, 7, C.brass); g.globalAlpha = 0.35 * I; disc(g, x, 172, 13, C.brass);
+        g.globalAlpha = 1;
+        label(g, 'mirror', XA - 7, 74, 'center'); label(g, 'mirror', XB + 7, 74, 'center'); label(g, 'flash of light', 210, 150, 'center');
+      },
+      read(on) { return [bounces, Math.round(I * 100) + '%', on ? '18%' : '0%']; },
+      stalled(on) { return on && I < 0.012; }
+    };
+  };
+
+  /* ---------- coil and capacitor ---------- */
+  M.lc = g => {
+    const loop = mkPath([[90, 90], [330, 90], [330, 250], [90, 250]], true), tr = new Array(70).fill(0), W = TAU / 1.6;
+    let ph = 0, A = 1, off = 0, swings = 0, acc = 0, sgn = 1;
+    return {
+      step(dt, on) {
+        if (!on) A += (1 - A) * Math.min(1, 1.2 * dt); else A = Math.max(0, A - (A * 0.2 + 0.006) * dt);
+        ph += W * dt; const q = A * Math.cos(ph), i = -A * Math.sin(ph);
+        off += i * 60 * dt; const s = q >= 0 ? 1 : -1; if (s !== sgn) { sgn = s; if (s > 0 && A > 0.02) swings++; }
+        acc += dt; if (acc > 0.035) { acc = 0; tr.push(q); tr.shift(); }
+      },
+      draw() {
+        const q = A * Math.cos(ph), i = -A * Math.sin(ph);
+        g.strokeStyle = C.ink; g.lineWidth = 1.6; g.strokeRect(90, 90, 240, 160);
+        g.fillStyle = C.plate; g.fillRect(78, 160, 24, 20); g.fillRect(318, 116, 24, 108);
+        g.lineWidth = 3; g.strokeStyle = q >= 0 ? C.stamp : C.water; g.globalAlpha = 0.25 + 0.75 * Math.abs(q); L(g, 70, 164, 110, 164);
+        g.strokeStyle = q >= 0 ? C.water : C.stamp; L(g, 70, 176, 110, 176); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.2; L(g, 70, 164, 110, 164); L(g, 70, 176, 110, 176);
+        g.lineWidth = 1.8; g.beginPath(); for (let k = 0; k < 6; k++) g.arc(330, 125 + k * 18, 9, -Math.PI / 2, Math.PI / 2); g.stroke();
+        g.strokeStyle = C.stamp; g.lineWidth = 1.3; g.globalAlpha = Math.abs(i);
+        for (const o of [20, 34]) { g.beginPath(); g.ellipse(346, 170, o, 62 + o * 0.4, 0, -Math.PI / 2 + 0.25, Math.PI / 2 - 0.25); g.stroke(); }
+        g.globalAlpha = 1;
+        for (let k = 0; k < 14; k++) { const p = loop.at(off + k * loop.len / 14); disc(g, p[0], p[1], 2.7, C.brass, C.ink, 0.8); }
+        g.strokeStyle = C.line; g.lineWidth = 1; g.strokeRect(128, 126, 164, 88);
+        g.strokeStyle = C.soft; g.setLineDash([3, 4]); L(g, 132, 170, 288, 170); g.setLineDash([]);
+        g.strokeStyle = C.ink; g.lineWidth = 1.5; g.beginPath(); tr.forEach((v, j) => { const x = 132 + j * (156 / 69), y = 170 - v * 36; j ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke();
+        label(g, 'capacitor', 90, 80, 'center'); label(g, 'coil', 330, 80, 'center'); label(g, 'voltage', 132, 228);
+      },
+      read(on) { return [swings, Math.round(A * 100) + '%', on ? '27%' : '0%']; },
+      stalled(on) { return on && A < 0.012; }
+    };
+  };
+
+  /* ---------- 20 · superconducting ring ---------- */
+  M.ring = g => {
+    let I = 1, th = 0, still = 0, he = 1;
+    const wall = k => { g.beginPath(); g.moveTo(70 + k, 96); g.lineTo(70 + k, 262); g.quadraticCurveTo(70 + k, 296 - k, 104, 296 - k); g.lineTo(316, 296 - k); g.quadraticCurveTo(350 - k, 296 - k, 350 - k, 262); g.lineTo(350 - k, 96); };
+    return {
+      step(dt, on) {
+        if (on) { I = Math.max(0, I - (I / 0.45 + 0.03) * dt); still = I === 0 ? still + dt : 0; } else { I += (1 - I) * Math.min(1, 1.5 * dt); still = 0; }
+        he += ((on ? 0.12 : 1) - he) * Math.min(1, 1.2 * dt); th += I * 2.2 * dt;
+      },
+      draw(on) {
+        wall(8); g.save(); g.clip(); g.globalAlpha = 0.32; g.fillStyle = C.water; const ly = 288 - he * 160; g.fillRect(70, ly, 290, 300 - ly); g.restore(); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 2; wall(0); g.stroke(); g.lineWidth = 1; wall(8); g.stroke();
+        // field through the ring, behind it
+        g.strokeStyle = C.stamp; g.lineWidth = 1.6; g.globalAlpha = I;
+        arrow(g, 210, 262, 210, 116, 9); arrow(g, 178, 256, 160, 128, 9); arrow(g, 242, 256, 260, 128, 9); g.globalAlpha = 1;
+        // the ring
+        g.beginPath(); g.ellipse(210, 205, 112, 40, 0, 0, TAU); g.ellipse(210, 205, 84, 25, 0, 0, TAU);
+        g.fillStyle = C.plate; g.fill('evenodd'); g.strokeStyle = C.ink; g.lineWidth = 1.8; g.stroke();
+        g.beginPath(); g.ellipse(210, 214, 112, 40, 0, 0, Math.PI); g.stroke(); L(g, 98, 205, 98, 214); L(g, 322, 205, 322, 214);
+        g.globalAlpha = 0.2 + 0.8 * I;
+        for (let k = 0; k < 14; k++) { const a = th + k * TAU / 14; disc(g, 210 + 98 * Math.cos(a), 205 + 32.5 * Math.sin(a), 2.8, C.brass, C.ink, 0.8); }
+        g.globalAlpha = 1;
+        // the field again where it rises in front of the far side of the ring
+        g.strokeStyle = C.stamp; g.lineWidth = 1.6; g.globalAlpha = I; L(g, 210, 178, 210, 150); g.globalAlpha = 1;
+        label(g, 'field', 270, 122); label(g, on ? 'ring above 7 K: an ordinary metal' : 'liquid helium, 4 K', 70, 84);
+      },
+      read(on) { return [(100 * I).toFixed(0) + ' A', on ? 'present' : '0 Ω', (50 * I).toFixed(0) + ' mT']; },
+      stalled() { return still > 0.6; }
+    };
+  };
+
+
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Machines: more of the first kind. Each M.name = g => ({ step, draw, read, stalled }).
+
+  /* ---------- superfluid in a ring ---------- */
+  M.superfluid = g => {
+    const cx = 210, cy = 172;
+    let v = 1, th = 0, laps = 0, still = 0;
+    return {
+      step(dt, on) {
+        if (on) { v = Math.max(0, v - (v / 1.4 + 0.04) * dt); still = v === 0 ? still + dt : 0; } else { v += (1 - v) * Math.min(1, 1.5 * dt); still = 0; }
+        const n = th + v * 1.1 * dt; if (Math.floor(n / TAU) > Math.floor(th / TAU)) laps++; th = n;
+      },
+      draw(on) {
+        g.beginPath(); g.arc(cx, cy, 112, 0, TAU); g.arc(cx, cy, 70, 0, TAU);
+        g.fillStyle = C.plate; g.fill('evenodd'); g.globalAlpha = 0.45; g.fillStyle = C.water; g.fill('evenodd'); g.globalAlpha = 1;
+        disc(g, cx, cy, 112, null, C.ink, 2.2); disc(g, cx, cy, 70, null, C.ink, 2.2);
+        g.strokeStyle = C.ink; g.lineWidth = 1.3;
+        for (let k = 0; k < 16; k++) {
+          const a = th + k * TAU / 16, r = 84 + (k % 3) * 8, x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+          g.globalAlpha = 0.3 + 0.7 * v; g.beginPath(); g.arc(cx, cy, r, a - 0.16 * v - 0.02, a); g.stroke(); disc(g, x, y, 2.2, C.ink);
+        }
+        g.globalAlpha = 1;
+        g.strokeStyle = C.soft; g.lineWidth = 1.3; g.beginPath(); g.arc(cx, cy, 124, -1.1, -0.55); g.stroke();
+        arrow(g, cx + 124 * Math.cos(-0.6), cy + 124 * Math.sin(-0.6), cx + 124 * Math.cos(-0.52), cy + 124 * Math.sin(-0.52), 8);
+        label(g, on ? 'above 2.17 K: an ordinary liquid' : 'superfluid helium, 1.5 K', 12, 20); label(g, 'ring-shaped channel', cx, cy + 4, 'center');
+      },
+      read(on) { return [(v * 4).toFixed(1) + ' cm/s', on ? 'present' : 'zero', laps]; },
+      stalled() { return still > 0.6; }
+    };
+  };
+
+  /* ---------- Redheffer's machine ---------- */
+  M.redheffer = g => {
+    const d = drive(1.1, 1.6);
+    let th = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; },
+      draw(on) {
+        ground(g, 30, 396, 318);
+        g.strokeStyle = C.ink; g.lineWidth = 4; L(g, 30, 98, 392, 98); g.lineWidth = 3; L(g, 374, 98, 374, 318);
+        // the machine on show
+        g.lineWidth = 2.4; L(g, 170, 112, 170, 300); L(g, 130, 300, 210, 300); L(g, 270, 236, 270, 300); L(g, 250, 300, 290, 300);
+        const ell = (cx, cy, rx, ry, n, a) => { g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, TAU); g.fillStyle = C.plate; g.fill(); g.stroke(); for (let k = 0; k < n; k++) { const t = a + k * TAU / n; if (Math.sin(t) > -0.2) L(g, cx + rx * Math.cos(t), cy + ry * Math.sin(t), cx + rx * Math.cos(t), cy + ry * Math.sin(t) + 6); } };
+        g.lineWidth = 1.6; ell(170, 236, 78, 16, 28, th); ell(270, 240, 22, 6, 9, -th * 3.5);
+        g.beginPath(); g.ellipse(170, 228, 78, 16, 0, 0, TAU); g.fillStyle = C.plate; g.fill(); g.stroke();
+        for (const sg of [-1, 1]) {
+          const bx = 170 + sg * 46 * Math.cos(th), sc = 0.75 + 0.25 * Math.sin(th) * sg, by = 222 + 6 * Math.sin(th) * sg;
+          poly(g, [[bx - 14 * sc, by], [bx + 14 * sc, by], [bx + 14 * sc * sg, by - 26 * sc]], true); g.fillStyle = C.plate; g.fill(); g.lineWidth = 1.4; g.stroke();
+          g.fillStyle = C.brass; g.fillRect(bx - 5 * sc - 2 * sg, by - 24 * sc, 10 * sc, 10 * sc); g.strokeRect(bx - 5 * sc - 2 * sg, by - 24 * sc, 10 * sc, 10 * sc);
+        }
+        g.lineWidth = 2.4; L(g, 170, 112, 170, 214);
+        // the loft
+        if (on) {
+          g.strokeStyle = C.stamp; g.lineWidth = 1.6; g.setLineDash([4, 4]); poly(g, [[306, 62], [374, 62], [374, 240], [292, 240]]); g.stroke(); g.setLineDash([]);
+          const hx = 290 + 14 * Math.cos(th * 3), hy = 62 + 14 * Math.sin(th * 3);
+          disc(g, 290, 62, 16, C.plate, C.ink, 1.8); g.strokeStyle = C.ink; g.lineWidth = 2; L(g, 290, 62, hx, hy); disc(g, hx, hy, 3, C.ink);
+          g.lineWidth = 2.2; disc(g, 236, 40, 8, C.plate, C.ink, 2); L(g, 236, 48, 236, 74); L(g, 236, 56, hx, hy); L(g, 236, 74, 256, 78); L(g, 256, 78, 256, 96); g.strokeRect(222, 74, 26, 22);
+          g.strokeStyle = C.soft; g.lineWidth = 1.2; g.strokeRect(40, 16, 344, 80);
+        } else {
+          g.fillStyle = C.plate; g.fillRect(40, 16, 344, 80); g.globalAlpha = 0.14; g.fillStyle = C.ink; g.fillRect(40, 16, 344, 80); g.globalAlpha = 1;
+          g.strokeStyle = C.soft; g.lineWidth = 1; for (let x = 52; x < 384; x += 14) L(g, x, 16, x, 96);
+          g.strokeStyle = C.ink; g.lineWidth = 1.2; g.strokeRect(40, 16, 344, 80);
+        }
+        label(g, on ? 'the cord, and the man who turns it' : 'the floor above, boarded over', 48, 34);
+        label(g, 'weights on 45° ramps', 60, 190);
+      },
+      read(on) { return [(d.v * 60 / TAU).toFixed(1) + ' rpm', 'for show', on ? (d.v > 0 ? 'caught' : 'stopped') : 'cranking']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- the Keely motor ---------- */
+  M.keely = g => {
+    const d = drive(1.6, 1.6);
+    let th = 0;
+    return {
+      step(dt, on) { d.step(dt, on); th += d.v * dt; },
+      draw(on) {
+        const f = d.frac;
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, 96, 196, 96, 150); L(g, 204, 196, 204, 150); L(g, 80, 150, 222, 150);
+        disc(g, 150, 100, 46, C.plate, C.ink, 2.2); disc(g, 150, 100, 36, null, C.ink, 1); g.lineWidth = 1.6; spokes(g, 150, 100, 6, 36, 6, th); disc(g, 150, 100, 6, C.plate, C.ink, 1.6);
+        L(g, 150, 146, 150, 150);
+        // gauge and tuning forks
+        disc(g, 300, 96, 24, C.plate, C.ink, 2); g.lineWidth = 1; spokes(g, 300, 96, 19, 24, 12, 0);
+        const na = Math.PI * 0.8 + f * Math.PI * 1.3; g.strokeStyle = C.stamp; g.lineWidth = 2; L(g, 300, 96, 300 + 18 * Math.cos(na), 96 + 18 * Math.sin(na)); disc(g, 300, 96, 2.5, C.ink);
+        g.strokeStyle = C.ink; g.lineWidth = 2; L(g, 300, 120, 300, 196);
+        for (const fx of [246, 352]) { const v = 2 * f * Math.sin(th * 9 + fx); g.lineWidth = 2.6; L(g, fx, 196, fx, 170); poly(g, [[fx - 7 - v, 130], [fx - 7, 170], [fx + 7, 170], [fx + 7 + v, 130]]); g.stroke(); }
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; poly(g, [[196, 100], [220, 100], [220, 196]]); g.stroke(); L(g, 276, 96, 220, 96);
+        // the floor
+        g.strokeStyle = C.ink; g.lineWidth = 4; L(g, 30, 198, 392, 198);
+        if (on) {
+          g.strokeStyle = C.soft; g.lineWidth = 1.2; g.strokeRect(40, 206, 344, 106);
+          disc(g, 290, 258, 46, C.plate, C.ink, 2.2); g.globalAlpha = 0.1; disc(g, 290, 258, 46, C.ink); g.globalAlpha = 1;
+          g.strokeStyle = C.stamp; g.lineWidth = 1.8; g.setLineDash([4, 4]); poly(g, [[244, 258], [220, 258], [220, 200]]); g.stroke(); g.setLineDash([]);
+          g.fillStyle = C.stamp; g.fillRect(212, 204, 16, 8);
+          g.strokeStyle = C.ink; g.lineWidth = 1.4; for (const a of [0.6, 1.2, 1.9, 2.5]) L(g, 290 + 40 * Math.cos(a), 258 - 40 * Math.sin(a), 290 + 46 * Math.cos(a), 258 - 46 * Math.sin(a));
+          label(g, 'steel sphere of', 60, 250); label(g, 'compressed air', 60, 266); label(g, 'foot valve', 204, 228, 'right');
+        } else {
+          g.fillStyle = C.plate; g.fillRect(40, 206, 344, 106); g.globalAlpha = 0.14; g.fillStyle = C.ink; g.fillRect(40, 206, 344, 106); g.globalAlpha = 1;
+          g.strokeStyle = C.soft; g.lineWidth = 1; for (let x = 52; x < 384; x += 14) L(g, x, 206, x, 312);
+          g.strokeStyle = C.ink; g.lineWidth = 1.2; g.strokeRect(40, 206, 344, 106);
+          label(g, 'under the floor', 212, 264, 'center');
+        }
+        label(g, 'vibratory engine', 150, 40, 'center'); label(g, 'gauge', 300, 60, 'center'); label(g, 'a "solid wire"', 226, 140);
+      },
+      read(on) { return [(d.v * 60 / TAU * 4).toFixed(0) + ' rpm', (Math.round(d.frac * 100) * 100).toLocaleString('en-US') + ' psi', on ? 'shut off' : 'flowing']; },
+      stalled() { return d.stalled(); }
+    };
+  };
+
+  /* ---------- Cox's timepiece ---------- */
+  M.cox = g => {
+    let tp = 0, p = 0, res = 0.8, hm = 0, wth = 0, still = 0;
+    return {
+      step(dt, on) {
+        if (!on) tp += dt;
+        const np = 0.6 * Math.sin(0.5 * tp) + 0.4 * Math.sin(1.3 * tp + 1), dp = Math.abs(np - p); p = np;
+        wth += dp * 2.4; res = clamp(res + dp * 0.5 - 0.11 * dt, 0, 1);
+        if (res > 0) hm += dt * 1.1; still = on && res <= 0 ? still + dt : 0;
+      },
+      draw() {
+        ground(g, 30, 396, 318);
+        g.fillStyle = C.plate; g.fillRect(50, 58, 140, 260); g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(50, 58, 140, 260);
+        disc(g, 120, 136, 56, C.plate, C.ink, 2); g.lineWidth = 1.2; spokes(g, 120, 136, 49, 56, 12, 0);
+        g.lineWidth = 3; L(g, 120, 136, 120 + 26 * Math.sin(hm / 12), 136 - 26 * Math.cos(hm / 12)); g.lineWidth = 1.8; L(g, 120, 136, 120 + 44 * Math.sin(hm), 136 - 44 * Math.cos(hm)); disc(g, 120, 136, 3.5, C.ink);
+        g.lineWidth = 1.4; gear(g, 120, 256, 24, 16, wth, C.plate); disc(g, 120, 256, 5, C.plate, C.ink, 1.4);
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; L(g, 144, 256, 262, 272);
+        // the barometer
+        g.fillStyle = C.plate; g.fillRect(262, 252, 76, 44); g.globalAlpha = 0.55; g.fillStyle = C.ink; g.fillRect(262, 268 + 6 * p, 76, 28 - 6 * p); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 262, 246, 262, 296); L(g, 262, 296, 338, 296); L(g, 338, 246, 338, 296); L(g, 280, 296, 280, 318); L(g, 320, 296, 320, 318);
+        g.fillStyle = C.plate; g.fillRect(292, 80, 16, 200); disc(g, 300, 72, 22, C.plate, C.ink, 1.8);
+        const top = 148 - 34 * p; g.globalAlpha = 0.55; g.fillStyle = C.ink; g.fillRect(292, top, 16, 280 - top); g.globalAlpha = 1;
+        g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 292, 92, 292, 280); L(g, 308, 92, 308, 280);
+        g.strokeStyle = C.soft; g.lineWidth = 1; for (let k = 0; k <= 8; k++) L(g, 312, 106 + k * 12, k % 4 ? 317 : 321, 106 + k * 12);
+        label(g, 'mercury barometer', 300, 40, 'center'); label(g, 'winding ratchet', 120, 304, 'center');
+      },
+      read() { return [Math.round(1013 + 18 * p) + ' hPa', Math.round(res * 100) + '%', res > 0 ? 'running' : 'stopped']; },
+      stalled() { return still > 0.5; }
+    };
+  };
+
+  /* ---------- self-winding watch ---------- */
+  M.watch = g => {
+    let t = 0, psi = 0, res = 1, swings = 0, worn = 1, bal = 0, hm = 0, sg = 1, still = 0;
+    return {
+      step(dt, on) {
+        worn += ((on ? 0 : 1) - worn) * Math.min(1, 1.2 * dt); t += dt;
+        const pv = psi; psi += (worn * (1.25 * Math.sin(1.9 * t) + 0.6 * Math.sin(3.1 * t + 1)) - psi) * Math.min(1, 6 * dt);
+        const s = psi >= 0 ? 1 : -1; if (s !== sg) { sg = s; if (worn > 0.3) swings++; }
+        res = clamp(res + Math.abs(psi - pv) * 0.12 - 0.11 * dt, 0, 1);
+        if (res > 0) { bal += dt * 14; hm += dt * 0.9; } still = on && res <= 0 ? still + dt : 0;
+      },
+      draw(on) {
+        const cx = 210 + 7 * worn * Math.sin(1.9 * t), cy = 170 + 5 * worn * Math.sin(2.7 * t + 0.5);
+        g.fillStyle = C.plate; g.strokeStyle = C.ink; g.lineWidth = 1.8;
+        g.fillRect(cx - 42, cy - 172, 84, 90); g.strokeRect(cx - 42, cy - 172, 84, 90); g.fillRect(cx - 42, cy + 82, 84, 90); g.strokeRect(cx - 42, cy + 82, 84, 90);
+        g.fillRect(cx + 98, cy - 9, 14, 18); g.strokeRect(cx + 98, cy - 9, 14, 18);
+        disc(g, cx, cy, 100, C.plate, C.ink, 2.6); disc(g, cx, cy, 91, null, C.ink, 1);
+        disc(g, cx - 38, cy - 34, 24, null, C.ink, 1.6); g.lineWidth = 1.1;
+        for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(cx - 38, cy - 34, 5 + k * 5, 0, TAU * (0.25 + 0.75 * res)); g.stroke(); }
+        g.lineWidth = 1.3; gear(g, cx + 30, cy - 42, 16, 12, hm, C.plate); gear(g, cx + 56, cy - 12, 10, 8, -hm * 1.5 + 0.3, C.plate);
+        const ba = 0.9 * Math.sin(bal); disc(g, cx + 30, cy + 40, 19, null, C.ink, 2); g.lineWidth = 1.3; spokes(g, cx + 30, cy + 40, 0, 19, 2, ba); disc(g, cx + 30, cy + 40, 3, C.ink);
+        g.beginPath(); g.arc(cx, cy, 86, psi, psi + Math.PI); g.arc(cx, cy, 30, psi + Math.PI, psi, true); g.closePath();
+        g.globalAlpha = 0.5; g.fillStyle = C.brass; g.fill(); g.globalAlpha = 1; g.strokeStyle = C.ink; g.lineWidth = 1.8; g.stroke();
+        disc(g, cx, cy, 7, C.plate, C.ink, 1.8);
+        label(g, on ? 'lying on a table' : 'on a moving wrist', 12, 20); label(g, 'rotor', 322, 300);
+      },
+      read() { return [swings, Math.round(res * 40) + ' h', res > 0 ? 'running' : 'stopped']; },
+      stalled() { return still > 0.5; }
+    };
+  };
+
+  /* ---------- Oxford Electric Bell ---------- */
+  M.oxford = g => {
+    let ph = 0, A = 1, rings = 0, sg = 1;
+    return {
+      step(dt, on) {
+        if (on) A = Math.max(0, A - (A / 2.5 + 0.02) * dt); else A += (1 - A) * Math.min(1, 1.3 * dt);
+        ph += TAU * 2 * dt; const s = Math.sin(ph) >= 0 ? 1 : -1; if (s !== sg) { sg = s; if (A > 0.7) rings++; }
+      },
+      draw() {
+        ground(g, 70, 350, 318);
+        g.fillStyle = C.plate; g.fillRect(96, 276, 228, 20); g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(96, 276, 228, 20); L(g, 120, 296, 120, 318); L(g, 300, 296, 300, 318);
+        g.beginPath(); g.moveTo(104, 276); g.lineTo(104, 90); g.ellipse(210, 90, 106, 58, 0, Math.PI, TAU); g.lineTo(316, 276);
+        g.globalAlpha = 0.05; g.fillStyle = C.ink; g.fill(); g.globalAlpha = 1; g.strokeStyle = C.soft; g.lineWidth = 2; g.stroke();
+        g.strokeStyle = C.ink; g.lineWidth = 2.2; L(g, 138, 52, 282, 52);
+        for (const cx of [153, 267]) {
+          g.fillStyle = C.plate; g.fillRect(cx - 15, 52, 30, 132); g.strokeStyle = C.soft; g.lineWidth = 1; for (let y = 58; y < 184; y += 5) L(g, cx - 15, y, cx + 15, y);
+          g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(cx - 15, 52, 30, 132); g.fillStyle = C.brass; g.fillRect(cx - 15, 184, 30, 8); g.strokeRect(cx - 15, 184, 30, 8);
+          L(g, cx, 192, cx, 204);
+          g.beginPath(); g.moveTo(cx - 30, 240); g.quadraticCurveTo(cx - 24, 204, cx, 204); g.quadraticCurveTo(cx + 24, 204, cx + 30, 240); g.closePath();
+          g.fillStyle = C.plate; g.fill(); g.globalAlpha = 0.4; g.fillStyle = C.brass; g.fill(); g.globalAlpha = 1; g.lineWidth = 1.8; g.stroke();
+        }
+        const bx = 210 + 21 * A * Math.sin(ph);
+        g.strokeStyle = C.soft; g.lineWidth = 1; L(g, 210, 52, bx, 228); disc(g, bx, 228, 6, C.brass, C.ink, 1.4);
+        g.fillStyle = C.ink; g.textAlign = 'center'; g.fillText('+', 153, 258); g.fillText('-', 267, 258); g.textAlign = 'left';
+        label(g, 'dry piles', 92, 64, 'right'); label(g, 'bell', 92, 228, 'right');
+      },
+      read(on) { return [(1e10 + rings).toLocaleString('en-US'), A > 0.7 ? '2 a second' : A > 0.02 ? 'fading' : 'none', on ? 'spent' : 'still some']; },
+      stalled(on) { return on && A === 0; }
+    };
+  };
+
+  /* ---------- the Beverly Clock ---------- */
+  M.beverly = g => {
+    let cyc = 0.1, Tb = 0, h = 0.6, hm = 0, wth = 0, still = 0;
+    return {
+      step(dt, on) {
+        cyc = (cyc + dt / 7) % 1;
+        const want = on ? 0 : Math.sin(TAU * cyc), nT = Tb + (want - Tb) * Math.min(1, 3 * dt), dT = Math.abs(nT - Tb); Tb = nT;
+        wth += dT * 2.2; h = clamp(h + dT * 0.42 - 0.085 * dt, 0, 1);
+        if (h > 0) hm += dt * 1.1; still = on && h <= 0 ? still + dt : 0;
+      },
+      draw(on) {
+        ground(g, 30, 396, 318);
+        const u = (cyc * 2) % 1, sx = 44 + 332 * u, sy = 62 - 40 * Math.sin(Math.PI * u);
+        g.strokeStyle = C.line; g.lineWidth = 1; g.setLineDash([3, 5]); g.beginPath(); g.moveTo(44, 62); g.quadraticCurveTo(210, -18, 376, 62); g.stroke(); g.setLineDash([]);
+        if (cyc < 0.5) { disc(g, sx, sy, 10, C.brass, C.ink, 1.2); g.strokeStyle = C.brass; g.lineWidth = 1.6; spokes(g, sx, sy, 14, 19, 8, 0); }
+        else { disc(g, sx, sy, 10, C.plate, C.ink, 1.4); disc(g, sx + 5, sy - 3, 8, C.plate); }
+        // air box and diaphragm
+        g.fillStyle = C.plate; g.fillRect(240, 186, 132, 112); g.strokeStyle = C.ink; g.lineWidth = on ? 5 : 2; g.strokeRect(240, 186, 132, 112);
+        g.lineWidth = 2; g.beginPath(); g.moveTo(262, 186); g.quadraticCurveTo(306, 186 - 30 * Tb, 350, 186); g.stroke();
+        const ry = 186 - 15 * Tb; L(g, 306, ry, 306, 150); disc(g, 306, 134, 17, C.plate, C.ink, 1.8); g.lineWidth = 1.3; gear(g, 306, 134, 13, 12, wth, C.plate);
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; L(g, 306, 117, 70, 117); disc(g, 70, 124, 7, C.plate, C.ink, 1.5);
+        const wy = 262 - 104 * h; g.strokeStyle = C.soft; L(g, 63, 124, 63, wy);
+        g.fillStyle = C.brass; g.fillRect(51, wy, 24, 32); g.strokeStyle = C.ink; g.lineWidth = 1.4; g.strokeRect(51, wy, 24, 32);
+        disc(g, 158, 214, 52, C.plate, C.ink, 2); g.lineWidth = 1.2; spokes(g, 158, 214, 45, 52, 12, 0);
+        g.lineWidth = 3; L(g, 158, 214, 158 + 24 * Math.sin(hm / 12), 214 - 24 * Math.cos(hm / 12)); g.lineWidth = 1.8; L(g, 158, 214, 158 + 40 * Math.sin(hm), 214 - 40 * Math.cos(hm)); disc(g, 158, 214, 3.5, C.ink);
+        label(g, on ? 'box lagged:' : 'sealed box:', 306, 240, 'center'); label(g, on ? 'no swings reach it' : 'a cubic foot of air', 306, 256, 'center');
+        label(g, cyc < 0.5 ? 'day' : 'night', 210, 96, 'center'); label(g, 'weight', 63, 310, 'center');
+      },
+      read() { return [(15 + 6 * Tb).toFixed(1) + ' °C', Math.round(h * 100) + '%', h > 0 ? 'running' : 'stopped']; },
+      stalled() { return still > 0.5; }
+    };
+  };
+
+  /* ---------- the Atmos clock ---------- */
+  M.atmos = g => {
+    let tp = 0, T = 0, res = 0.8, hm = 0, tt = 0, amp = 1, wth = 0, still = 0;
+    return {
+      step(dt, on) {
+        if (!on) tp += dt;
+        const nT = 0.6 * Math.sin(0.55 * tp) + 0.4 * Math.sin(1.4 * tp + 2), dT = Math.abs(nT - T); T = nT;
+        wth += dT * 2.4; res = clamp(res + dT * 0.5 - 0.11 * dt, 0, 1);
+        amp += ((res > 0 ? 1 : 0) - amp) * Math.min(1, 0.8 * dt);
+        if (res > 0) hm += dt * 1.1; tt += dt; still = on && res <= 0 ? still + dt : 0;
+      },
+      draw() {
+        ground(g, 60, 360, 318);
+        g.fillStyle = C.plate; g.fillRect(104, 296, 212, 22); g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(104, 296, 212, 22);
+        g.globalAlpha = 0.05; g.fillStyle = C.ink; g.fillRect(112, 40, 196, 256); g.globalAlpha = 1; g.strokeStyle = C.soft; g.lineWidth = 2; g.strokeRect(112, 40, 196, 256);
+        disc(g, 210, 100, 40, C.plate, C.ink, 2); g.lineWidth = 1.2; spokes(g, 210, 100, 34, 40, 12, 0);
+        g.lineWidth = 3; L(g, 210, 100, 210 + 19 * Math.sin(hm / 12), 100 - 19 * Math.cos(hm / 12)); g.lineWidth = 1.8; L(g, 210, 100, 210 + 31 * Math.sin(hm), 100 - 31 * Math.cos(hm)); disc(g, 210, 100, 3, C.ink);
+        // the gas capsule and its chain
+        const len = 42 + 13 * T, x1 = 126 + len;
+        g.fillStyle = C.plate; g.fillRect(126, 166, len, 40); g.strokeStyle = C.ink; g.lineWidth = 1.6; g.strokeRect(126, 166, len, 40);
+        g.lineWidth = 1; for (let k = 1; k < 7; k++) L(g, 126 + len * k / 7, 166, 126 + len * k / 7, 206);
+        g.strokeStyle = C.soft; g.lineWidth = 1.2; L(g, x1, 186, 262, 186); g.strokeStyle = C.ink; g.lineWidth = 1.3; gear(g, 274, 186, 13, 12, wth, C.plate);
+        // torsion pendulum
+        g.lineWidth = 1.2; L(g, 210, 140, 210, 256);
+        const ang = 2.4 * amp * Math.sin(tt * TAU / 3.4);
+        g.beginPath(); g.ellipse(210, 262, 54, 11, 0, 0, TAU); g.fillStyle = C.plate; g.fill(); g.globalAlpha = 0.35; g.fillStyle = C.brass; g.fill(); g.globalAlpha = 1; g.lineWidth = 1.8; g.stroke();
+        for (let k = 0; k < 6; k++) { const a = ang + k * TAU / 6; disc(g, 210 + 46 * Math.cos(a), 262 + 9 * Math.sin(a), Math.sin(a) > 0 ? 3.2 : 2.2, C.ink); }
+        // room thermometer
+        g.fillStyle = C.plate; g.fillRect(62, 86, 10, 180); g.strokeStyle = C.ink; g.lineWidth = 1.4; g.strokeRect(62, 86, 10, 180);
+        const ty = 176 - 60 * T; g.fillStyle = C.stamp; g.fillRect(64, ty, 6, 266 - ty); disc(g, 67, 272, 9, C.stamp, C.ink, 1.4);
+        label(g, 'room', 67, 76, 'center'); label(g, 'capsule of gas', 126, 226); label(g, 'slow twisting pendulum', 210, 290, 'center');
+      },
+      read() { return [(20 + 1.5 * T).toFixed(1) + ' °C', Math.round(res * 100) + '%', res > 0 ? 'running' : 'stopped']; },
+      stalled() { return still > 0.5; }
+    };
+  };
+
+  /* ---------- the drinking bird ---------- */
+  M.bird = g => {
+    const PV = [190, 172];
+    let p = 0.2, dips = 0, rate = 1, phi = 0.4;
+    return {
+      step(dt, on) {
+        rate += ((on ? 0 : 1) - rate) * Math.min(1, 0.5 * dt); if (on && rate < 0.03) rate = 0;
+        p += rate * dt / 5.2; if (p >= 1) { p -= 1; dips++; }
+        const tg = p < 0.72 ? 0.3 + 0.78 * Math.pow(p / 0.72, 2) + 0.1 * Math.sin(p * 44) * (1 - p / 0.72) : p < 0.84 ? 1.56 : 1.56 - 1.26 * ((p - 0.84) / 0.16);
+        phi += ((on ? 0.45 + (tg - 0.45) * rate : tg) - phi) * Math.min(1, 10 * dt);
+      },
+      draw(on) {
+        ground(g, 40, 380, 318);
+        g.fillStyle = C.plate; g.fillRect(150, 292, 80, 10); g.strokeStyle = C.ink; g.lineWidth = 1.8; g.strokeRect(150, 292, 80, 10); g.strokeRect(252, 238, 82, 64);
+        g.lineWidth = 2.2; L(g, PV[0], PV[1], 166, 292); L(g, PV[0], PV[1], 214, 292);
+        g.globalAlpha = 0.45; g.fillStyle = C.water; g.fillRect(260, 166, 66, 72); g.globalAlpha = 1; g.strokeStyle = C.ink; g.lineWidth = 1.8; L(g, 260, 150, 260, 238); L(g, 260, 238, 326, 238); L(g, 326, 150, 326, 238);
+        const ux = Math.sin(phi), uy = -Math.cos(phi), Hd = [PV[0] + 78 * ux, PV[1] + 78 * uy], Bc = [PV[0] - 62 * ux, PV[1] - 62 * uy];
+        const fl = p < 0.72 ? p / 0.72 : Math.max(0, 1 - (p - 0.72) / 0.12);
+        g.lineCap = 'butt'; g.strokeStyle = C.ink; g.lineWidth = 9; L(g, Bc[0], Bc[1], Hd[0], Hd[1]); g.strokeStyle = C.plate; g.lineWidth = 5.5; L(g, Bc[0], Bc[1], Hd[0], Hd[1]);
+        g.strokeStyle = C.stamp; g.globalAlpha = 0.7; L(g, Bc[0], Bc[1], Bc[0] + 132 * fl * ux, Bc[1] + 132 * fl * uy); g.globalAlpha = 1; g.lineCap = 'round';
+        disc(g, Bc[0], Bc[1], 21, C.plate, C.ink, 1.8); g.globalAlpha = 0.55; disc(g, Bc[0], Bc[1], 16, C.stamp); g.globalAlpha = 1;
+        const nx = -uy, ny = ux;
+        poly(g, [[Hd[0] + 10 * ux + 5 * nx, Hd[1] + 10 * uy + 5 * ny], [Hd[0] + 36 * ux + 9 * nx, Hd[1] + 36 * uy + 9 * ny], [Hd[0] + 6 * ux + 12 * nx, Hd[1] + 6 * uy + 12 * ny]], true); g.fillStyle = C.brass; g.fill(); g.strokeStyle = C.ink; g.lineWidth = 1.3; g.stroke();
+        disc(g, Hd[0], Hd[1], 13, C.plate, C.ink, 1.8); g.globalAlpha = 0.4; disc(g, Hd[0], Hd[1], 13, on ? C.soft : C.water); g.globalAlpha = 1; disc(g, Hd[0] + 4 * ux + 5 * nx, Hd[1] + 4 * uy + 5 * ny, 2, C.ink);
+        g.fillStyle = C.ink; poly(g, [[Hd[0] - 12 * nx + 2 * ux, Hd[1] - 12 * ny + 2 * uy], [Hd[0] - 12 * nx + 14 * ux, Hd[1] - 12 * ny + 14 * uy], [Hd[0] - 4 * nx + 16 * ux, Hd[1] - 4 * ny + 16 * uy], [Hd[0] - 4 * nx + 9 * ux, Hd[1] - 4 * ny + 9 * uy]], true); g.fill();
+        disc(g, PV[0], PV[1], 4, C.plate, C.ink, 1.6);
+        if (on) { g.beginPath(); g.moveTo(40, 302); g.lineTo(40, 96); g.ellipse(196, 96, 156, 76, 0, Math.PI, TAU); g.lineTo(352, 302); g.globalAlpha = 0.05; g.fillStyle = C.ink; g.fill(); g.globalAlpha = 1; g.strokeStyle = C.soft; g.lineWidth = 2; g.stroke(); }
+        label(g, on ? 'under a jar the air turns damp' : 'wet head, dry room', 12, 16);
+      },
+      read(on) { return [dips, rate > 0.5 ? '18.6 °C' : '20.0 °C', '20.0 °C']; },
+      stalled(on) { return on && rate === 0; }
+    };
+  };
+
+// Perpetuum Mobile. Copyright (C) 2026 Jurgen Kobierczynski.
+// SPDX-License-Identifier: GPL-3.0-only
+// Made with Claude Opus 5.5 Medium.
+// Finds every <canvas data-m="..."> on the page, mounts its machine and runs the animation loop.
+
+  /* ---------- runtime: every canvas on the page that names a machine ---------- */
+  const figs = [...document.querySelectorAll('canvas[data-m]')].map(cv => {
+    const unit = cv.closest('.unit'), g = cv.getContext('2d');
+    const f = { cv, g, on: false, vis: true, thumb: unit.classList.contains('card'), m: M[cv.dataset.m](g),
+      sw: unit.querySelector('.switch'), state: unit.querySelector('.swstate'), stamp: unit.querySelector('.stamp'),
+      dd: [...unit.querySelectorAll('.readout dd')] };
+    f.draw = () => {
+      const k = cv.width / 420;
+      g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, 420, 340);
+      g.lineCap = 'round'; g.lineJoin = 'round'; g.setLineDash([]); g.lineDashOffset = 0; g.globalAlpha = 1;
+      g.font = '500 12.5px ' + MONO; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+      QUIET = f.thumb; f.m.draw(f.on); QUIET = false;
+    };
+    f.fit = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2), w = Math.max(50, cv.clientWidth);
+      cv.width = Math.round(w * dpr); cv.height = Math.round(w * 340 / 420 * dpr); f.draw();
+    };
+    f.report = () => {
+      if (f.dd.length) f.m.read(f.on).forEach((v, j) => { f.dd[j].textContent = v; });
+      if (f.stamp) f.stamp.hidden = !f.m.stalled(f.on);
+    };
+    return f;
+  });
+
+  let paused = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const master = $('master'), pauseBtn = $('pause');
+  const allOn = () => figs.every(f => f.on);
+  function setPaused(p) { paused = p; if (pauseBtn) pauseBtn.textContent = p ? 'Run' : 'Pause'; }
+  function apply(f, on) {
+    f.on = on; if (f.m.set) f.m.set(on);
+    if (f.sw) { f.sw.setAttribute('aria-checked', String(on)); f.state.textContent = f.sw.dataset[on ? 'on' : 'off']; }
+    if (master) master.textContent = allOn() ? master.dataset.on : master.dataset.off;
+    setPaused(false);
+  }
+  figs.forEach(f => { if (f.sw) f.sw.addEventListener('click', () => apply(f, !f.on)); });
+  if (master) master.addEventListener('click', () => { const on = !allOn(); figs.forEach(f => apply(f, on)); });
+  if (pauseBtn) pauseBtn.addEventListener('click', () => setPaused(!paused));
+  setPaused(paused);
+
+  figs.forEach(f => { f.fit(); f.report(); });
+  if (window.ResizeObserver) { const ro = new ResizeObserver(es => es.forEach(e => { const f = figs.find(x => x.cv === e.target); if (f) f.fit(); })); figs.forEach(f => ro.observe(f.cv)); }
+  if (window.IntersectionObserver) {
+    const io = new IntersectionObserver(es => es.forEach(e => { const f = figs.find(x => x.cv === e.target); if (f) f.vis = e.isIntersecting; }), { rootMargin: '120px' });
+    figs.forEach(f => io.observe(f.cv));
+  }
+
+  let last = performance.now(), tick = 0;
+  function frame(now) {
+    const dt = clamp((now - last) / 1000, 0, 0.05); last = now; tick++;
+    if (tick % 30 === 0) readColors();
+    for (const f of figs) {
+      if (!f.vis) continue;
+      if (!paused) f.m.step(dt, f.on);
+      f.draw();
+      if (tick % 6 === 0) f.report();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
