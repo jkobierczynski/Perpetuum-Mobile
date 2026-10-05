@@ -2,6 +2,8 @@
 
 Fifty-six perpetual motion machines, drawn as animated blueprint sheets. Each one runs for ever, because the rule of physics it has to break is switched off. Switch the rule back on and the machine runs down, with a short explanation of why.
 
+[Perpetuum Mobile Gallery Demo](https://jurgenkobierczynski.com/Perpetuum-Mobile/dist/index.html)
+
 ![Part of the gallery: machines of the first kind](docs/gallery.png)
 
 The site is plain HTML, CSS and JavaScript with no dependencies. Every page is a single self-contained file.
